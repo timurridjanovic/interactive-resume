@@ -1,0 +1,31 @@
+application: interactive-resume
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /css
+  static_dir: css
+
+- url: /js
+  static_dir: js
+  
+- url: /img
+static_dir: img
+
+- url: /map
+static_dir: map
+
+- url: /components
+  static_dir: components
+
+- url: /.*
+  script: interactive-resume.app
+
+libraries:
+- name: jinja2                                                                  
+  version: latest   
+
+builtins:
+- remote_api: on

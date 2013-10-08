@@ -1,0 +1,25 @@
+canvas {
+	border: 1px solid black;
+}
+
+.container {
+	margin: 0 auto;
+	
+}
+
+#canvas {
+	float: left;
+}
+
+#box {
+	float: left;
+	margin-left: 10px;
+	padding-left: 10px;
+	width: 300px;
+	height: 800px;
+	border-style:solid;
+	border-width:1px;
+
+}
+
+
