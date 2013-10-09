@@ -53,3 +53,5 @@ we want to take when a key is pressed*/
 
 
 });
+
+gInputEngine = new InputEngine();
