@@ -23,9 +23,9 @@ we want to take when a key is pressed*/
     },
     
     onKeyDown: function(event) {
-        var action = this.bindings[event.keyCode];
+        var action = gInputEngine.bindings[event.keyCode];
         if (action) {
-            this.actions[action] = true;
+            gInputEngine.actions[action] = true;
             event.preventDefault();
         }
         return false;
@@ -33,19 +33,32 @@ we want to take when a key is pressed*/
     },
     
     onKeyUp: function(event) {
-        var action = this.bindings[event.keyCode];
+        var action = gInputEngine.bindings[event.keyCode];
         if (action) {
-            this.actions[action] = false;
+            gInputEngine.actions[action] = false;
             
-            var listeners = this.listeners[action];
+            var listeners = gInputEngine.listeners[action];
             if (listeners) {
                 for (var i = 0; i < listeners.length; i++) {
                     var listener = listeners[i];
                     listener();
                 }
             }
+            event.preventDefault();
         }
+        return false;
     
+    
+    },
+    
+    addListener: function(action, listener) {
+        this.listeners[action] = this.listeners[action] || new Array();
+        this.listeners[action].push(listener);
+    
+    },
+    
+    removeListeners: function() {
+        this.listeners = [];
     
     }
 
