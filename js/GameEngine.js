@@ -40,6 +40,7 @@ GameEngine = Class.extend({
         var queue = this.preloadImages();
         this.setupMap();
         gInputEngine.setup();
+        gMainPlayer = new Player();
         this.gameLoop();
         
             
@@ -49,7 +50,7 @@ GameEngine = Class.extend({
     gameLoop: function() {
         var that = this;
         this.drawTiles();
-        this.drawPlayer();
+        gMainPlayer.drawPlayer();
         requestAnimationFrame(this.gameLoop.bind(this));
     },
     
@@ -141,13 +142,7 @@ GameEngine = Class.extend({
                 }
             }
         }
-    },
-   
-    drawPlayer: function() {
-        gPlayer = new Player();
-    
     }
-    
 });
 
 gGameEngine = new GameEngine();
