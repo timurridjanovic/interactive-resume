@@ -11,7 +11,7 @@ Player = Class.extend({
     },
     
     drawPlayer: function() {
-        
+        gGameEngine.ctx.drawImage(gGameEngine.mainPlayerImg, 0, 0, 32, 32, 90, 100, 32, 32);
     
     }
 
