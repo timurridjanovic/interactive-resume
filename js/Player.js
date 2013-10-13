@@ -2,7 +2,11 @@ Player = Class.extend({
 
     frameY: {'down': 11, 'left': 59, 'up': 107, 'right': 155}, //+48
     
-    frameX: [8, 56, 104, 152], //+48
+    frameX: {1:8, 2:56, 3:104, 4:152}, //+48
+    
+    currentFrame: 0,
+    
+    movementTime: 0,
     
     direction: 'down',
     
@@ -24,21 +28,54 @@ Player = Class.extend({
         if (gInputEngine.actions['up'] == true) {
             this.direction = 'up';
             this.coordY--;
+            
+            this.movementTime++;
+        
+            if (this.movementTime >= 8) {
+                this.currentFrame = (this.currentFrame%4) + 1;
+                this.movementTime = 0;
+            }
         }
-        if (gInputEngine.actions['down'] == true) {
+        
+        else if (gInputEngine.actions['down'] == true) {
             this.direction = 'down';
             this.coordY++;
+            
+            this.movementTime++;
+        
+            if (this.movementTime >= 8) {
+                this.currentFrame = (this.currentFrame%4) + 1;
+                this.movementTime = 0;
+            }            
         }
-        if (gInputEngine.actions['left'] == true) {
+        
+        else if (gInputEngine.actions['left'] == true) {
             this.direction = 'left';
             this.coordX--;
+            
+            this.movementTime++;
+        
+            if (this.movementTime >= 8) {
+                this.currentFrame = (this.currentFrame%4) + 1;
+                this.movementTime = 0;
+            }             
         }
-        if (gInputEngine.actions['right'] == true) {
+        
+        
+        else if (gInputEngine.actions['right'] == true) {
             this.direction = 'right';
             this.coordX++;
+            
+            this.movementTime++;
+        
+            if (this.movementTime >= 8) {
+                this.currentFrame = (this.currentFrame%4) + 1;
+                this.movementTime = 0;
+            }             
         }     
- 
-        gGameEngine.ctx.drawImage(gGameEngine.mainPlayerImg, 104, this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+        
+        
+        gGameEngine.ctx.drawImage(gGameEngine.mainPlayerImg, this.frameX[this.currentFrame], this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
     
     }
 
