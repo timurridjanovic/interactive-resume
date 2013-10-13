@@ -48,7 +48,6 @@ GameEngine = Class.extend({
     },
     
     gameLoop: function() {
-        var that = this;
         this.drawTiles();
         gMainPlayer.drawPlayer();
         requestAnimationFrame(this.gameLoop.bind(this));
