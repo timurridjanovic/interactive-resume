@@ -12,6 +12,8 @@ GameEngine = Class.extend({
     
     mainPlayerImg: null,
     
+    characterImgs: [],
+    
     tilesImgs: {},
     
     images: [],
@@ -20,7 +22,7 @@ GameEngine = Class.extend({
     
     collision: {},
     
-    loadManifest: [ {name: "mainPlayer", src: "/img/mainPlayer.png"},
+    loadManifest: [ {name: "mainPlayer", src: "img/mainPlayer.png"},
                     {name: "tile_carpet", src: "img/tile_carpet.png"},
                     {name: "tile_wall", src: "img/tile_wall.png"},
                     {name: "tile_wood", src: "img/tile_wood.png"},
@@ -28,7 +30,13 @@ GameEngine = Class.extend({
                     {name: "chest", src: "img/chest.png"},
                     {name: "cupboard", src: "img/cupboard.png"},
                     {name: "desk", src: "img/desk.png"},
-                    {name: "pot", src: "img/pot.png"}],
+                    {name: "pot", src: "img/pot.png"},
+                    {name: "character_one", src: "img/character_one.png"},
+                    {name: "character_two", src: "img/character_two.png"},
+                    {name: "character_three", src: "img/character_three.png"},
+                    {name: "character_four", src: "img/character_four.png"},
+                    {name: "multi_characters", src: "img/multi_characters.png"}
+                    ],
     
     
     load: function() {
@@ -41,6 +49,7 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
+        characterOne = new Character(640, 150, 'character_one', 'down');
         
         this.gameLoop();
         
@@ -59,6 +68,7 @@ GameEngine = Class.extend({
         //drawing tiles and player        
         this.drawTiles();
         mainPlayer.drawPlayer();
+        characterOne.drawCharacter();
         
         //restoring context
         this.ctx.restore();

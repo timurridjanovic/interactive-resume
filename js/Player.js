@@ -80,7 +80,6 @@ Player = Class.extend({
         //animation when moving
         if (movingFlag == true) {
             this.movementTime++;
-            console.log(Math.round(this.coordX/32), Math.round(this.coordY/32));
         
             if (this.movementTime >= 6) {
                 this.currentFrame = (this.currentFrame%4) + 1;
