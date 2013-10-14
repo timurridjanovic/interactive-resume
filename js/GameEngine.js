@@ -2,15 +2,13 @@ GameEngine = Class.extend({
     tileSize: 32,
     tilesX: 50,
     tilesY: 50,
-    size: {},
-    fps: 50,
+    timeAverage: [],
+    time: 0,
+    fps: 0,
+    timePerFrame: 0,
     canvasWidth: 0,
     canvasHeight: 0,
     progressBarPercent: 0,
-
-    stage: null,
-    
-    tiles: [],
     
     mainPlayerImg: null,
     
@@ -19,6 +17,8 @@ GameEngine = Class.extend({
     images: [],
     
     mapData: {},
+    
+    collision: {},
     
     loadManifest: [ {name: "mainPlayer", src: "/img/mainPlayer.png"},
                     {name: "tile_carpet", src: "img/tile_carpet.png"},
@@ -32,25 +32,71 @@ GameEngine = Class.extend({
     
     
     load: function() {
-        var canvas = document.getElementById('canvas');
-        this.canvasWidth = canvas.width;
-        this.canvasHeight = canvas.height;
-	    this.ctx = canvas.getContext('2d');
+        this.canvas = document.getElementById('canvas');
+        this.canvasWidth = this.canvas.width;
+        this.canvasHeight = this.canvas.height;
+	    this.ctx = this.canvas.getContext('2d');
 	    
         var queue = this.preloadImages();
         this.setupMap();
         gInputEngine.setup();
-        gMainPlayer = new Player();
+        mainPlayer = new Player();
+        
         this.gameLoop();
         
             
 
     },
     
-    gameLoop: function() {
+    gameLoop: function() {   
+        //clearing context
+        this.ctx.clearRect(0, 0, 30, 30); 
+         
+        //translate context
+        this.ctx.save();
+        this.translateContext();
+       
+        //drawing tiles and player        
         this.drawTiles();
-        gMainPlayer.drawPlayer();
+        mainPlayer.drawPlayer();
+        
+        //restoring context
+        this.ctx.restore();
+        
+        //calculating frames per second
+        this.framesPerSecond();
+       
         requestAnimationFrame(this.gameLoop.bind(this));
+    },
+    
+    
+    translateContext: function() {
+        var minPointX = this.canvasWidth/2;
+        var minPointY = this.canvasHeight/2;
+        
+        var maxPointX = this.tileSize * this.tilesX - this.canvasWidth/2;
+        var maxPointY = this.tileSize * this.tilesY - this.canvasHeight/2;
+        
+        
+        if (mainPlayer.coordX >= minPointX && mainPlayer.coordX <= maxPointX) {
+            this.ctx.translate(-mainPlayer.coordX + minPointX, 0);
+        
+        }
+        
+        if (mainPlayer.coordX > maxPointX) {
+            this.ctx.translate(-maxPointX + minPointX, 0);
+        }
+        
+        if (mainPlayer.coordY >= minPointY && mainPlayer.coordY <= maxPointY) {
+            this.ctx.translate(0, -mainPlayer.coordY + minPointY);
+        
+        }
+        
+        if (mainPlayer.coordY > maxPointY) {
+            this.ctx.translate(0, -maxPointY + minPointY);
+        
+        }
+    
     },
     
     preloadImages: function() {
@@ -68,6 +114,30 @@ GameEngine = Class.extend({
             this.images[i].alt = this.loadManifest[i]['name'];
      
         }
+    },
+    
+    framesPerSecond: function () {
+        var time = new Date();
+        
+        if (this.timePerFrame != 0) {this.timePerFrame = time - this.timePerFrame;}
+        
+        this.timeAverage.push(this.timePerFrame);
+        
+        this.timePerFrame = new Date();
+      
+        
+        if (this.timeAverage.length >= 10) {
+            var result = 0;
+            for (var i = 0; i < 10; i++) {
+                result += this.timeAverage[i]
+            }
+            
+            result = result/this.timeAverage.length;
+            this.fps = Math.round(1000/result);
+            this.timeAverage = [];
+        }    
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(this.fps, 0, 10);
     },
     
     progressBar: function(i) {
@@ -125,19 +195,25 @@ GameEngine = Class.extend({
                 //for loop for the x axis tiles
                 for (var j = 0; j < this.tilesX; j++) {
                     var tileNumber = i * this.tilesX + j;
-                    var MapX = j * this.tileSize;
-                    var MapY = i * this.tileSize;
+                    MapX = j * this.tileSize;
+                    MapY = i * this.tileSize;
                     var tileID = this.mapData["layers"][layer]['data'][tileNumber];
                     var image = this.tilesImgs[tileID];
                     
+
+                    
                     //if tileID == 0, there is no tile...
                     if (tileID != 0) {
+                        //collision detection
+                        if (this.mapData.layers[layer].properties.collision == 'true') {
+                            this.collision[[j, i]] = true;
+                          
+                        }
+                        
                         this.ctx.drawImage(image, MapX, MapY);
+                        
+                        
                     }
-                    
-                
-                
-                
                 }
             }
         }
