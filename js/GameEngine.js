@@ -9,6 +9,7 @@ GameEngine = Class.extend({
     canvasWidth: 0,
     canvasHeight: 0,
     progressBarPercent: 0,
+    tilesDrawn: false,
     
     mainPlayerImg: null,
     
@@ -20,7 +21,7 @@ GameEngine = Class.extend({
     
     mapData: {},
     
-    collision: {},
+    collision: [],
     
     loadManifest: [ {name: "mainPlayer", src: "img/mainPlayer.png"},
                     {name: "tile_carpet", src: "img/tile_carpet.png"},
@@ -115,7 +116,7 @@ GameEngine = Class.extend({
         for (var i = 0; i < this.loadManifest.length; i++) {
             this.images[i] = new Image();
             this.images[i].onload = function() {
-                ++loadedImages;
+                loadedImages++; //++ before?
                 that.progressBar(loadedImages);
                 
             }
@@ -215,8 +216,13 @@ GameEngine = Class.extend({
                     //if tileID == 0, there is no tile...
                     if (tileID != 0) {
                         //collision detection
-                        if (this.mapData.layers[layer].properties.collision == 'true') {
-                            this.collision[[j, i]] = true;
+                        if (this.mapData.layers[layer].properties.collision == 'true' && this.tilesDrawn == false) {
+                        	var tileCoords = {};
+                        	tileCoords.top = MapY;
+                        	tileCoords.bottom = MapY + this.tileSize;
+                        	tileCoords.left = MapX;
+                        	tileCoords.right = MapX + this.tileSize;
+                            this.collision.push(tileCoords);
                           
                         }
                         
@@ -227,6 +233,7 @@ GameEngine = Class.extend({
                 }
             }
         }
+        this.tilesDrawn = true;
     }
 });
 

@@ -2,7 +2,7 @@ Character = Class.extend({
 
     frameY: {'down': 11, 'left': 59, 'up': 107, 'right': 155}, //+48
     
-    frameX: {1:9, 2:57, 3:105, 4:153}, //+48
+    frameX: {1:8, 2:56, 3:104, 4:152}, //+48
     
     currentFrame: 1,
     
