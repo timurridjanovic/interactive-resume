@@ -51,6 +51,7 @@ GameEngine = Class.extend({
         gInputEngine.setup();
         mainPlayer = new Player();
         characterOne = new Character(640, 150, 'character_one', 'down');
+        characterTwo = new Character(850, 200, 'character_two', 'down');
         
         this.gameLoop();
         
@@ -70,6 +71,7 @@ GameEngine = Class.extend({
         this.drawTiles();
         mainPlayer.drawPlayer();
         characterOne.drawCharacter();
+        characterTwo.drawCharacter();
         
         //restoring context
         this.ctx.restore();
