@@ -50,26 +50,42 @@ Character = Class.extend({
     	//storing coordinates in a collision dict
     	gGameEngine.characterCollisions[this.imgName] = this.characterCoords;
     	
-    	//collision with mainPlayer
-        if (!gGameEngine.intersectRect([mainPlayer.characterCoords], this)) {
-    		this.directionFlag.up = true;
-    		this.directionFlag.down = true;
-    		this.directionFlag.left = true;
-    		this.directionFlag.right = true;        
-        }
-       	
-    	
-    	//collision with collision tiles
-        if (!gGameEngine.intersectRect(gGameEngine.collision, this)) {
-    		this.directionFlag.up = true;
-    		this.directionFlag.down = true;
-    		this.directionFlag.left = true;
-    		this.directionFlag.right = true;         
-        }
-        
-    	
-    
-        if (this.direction == 'down' && this.directionFlag.down == true) {
+    	//checking to see if character is stuck in between 2 tiles
+    	if (gGameEngine.intersectRect([mainPlayer.characterCoords], this) && gGameEngine.intersectRect(gGameEngine.collision, this)) {
+    		console.log('stuck');
+    		this.directionFlag.up = false;
+    		this.directionFlag.down = false;
+    		this.directionFlag.left = false;
+    		this.directionFlag.right = false;    
+    	}
+    	//if the character is not stuck, we can do normal collision detection...
+    	else {
+    		//collision with mainPlayer
+    		if (gGameEngine.intersectRect([mainPlayer.characterCoords], this)) {
+    			gGameEngine.collisionHandler([mainPlayer.characterCoords], this);
+    		}
+    		else {
+				this.directionFlag.up = true;
+				this.directionFlag.down = true;
+				this.directionFlag.left = true;
+				this.directionFlag.right = true; 
+    		}
+    		
+    		//collision with collision tiles
+    		if (gGameEngine.intersectRect(gGameEngine.collision, this)) {
+    			gGameEngine.collisionHandler(gGameEngine.collision, this);
+    		
+    		}
+    		else {
+		  		this.directionFlag.up = true;
+				this.directionFlag.down = true;
+				this.directionFlag.left = true;
+				this.directionFlag.right = true;   		
+    		}
+    		
+    	}
+
+		if (this.direction == 'down' && this.directionFlag.down == true) {
             this.coordY++;
             this.positionTimeOne++;
         }

@@ -243,15 +243,13 @@ GameEngine = Class.extend({
     },
     
     
-    intersectRect: function(collisionTiles, character) {
+    collisionHandler: function(collisionTiles, character) {
     	
     	for (var i = 0; i < collisionTiles.length; i++) {
     		var tile = collisionTiles[i];
     		var gap = 2;
     		var upGap = 12;
-    		
-   
-			if (tile.bottom > character.characterCoords.top + upGap && tile.top < character.characterCoords.bottom) {
+    		if (tile.bottom > character.characterCoords.top + upGap && tile.top < character.characterCoords.bottom) {
 				if (tile.left < character.characterCoords.right && tile.right > character.characterCoords.left) {
 					//collision up
 					if (character.characterCoords.top + upGap > tile.top && character.direction == 'up') {
@@ -289,18 +287,25 @@ GameEngine = Class.extend({
 						character.coordX++;
 						console.log('collision left');
 					}
-					return true;
-		
 				}
-		
-			}
-
-    	
+			}		
     	}
-    	
-    	return false;	
+    },
     
-    }    
+    intersectRect: function(collisionTiles, character) {
+    	
+    	for (var i = 0; i < collisionTiles.length; i++) {
+    		var tile = collisionTiles[i];
+    		var upGap = 12;
+    		
+			if (tile.bottom > character.characterCoords.top + upGap && tile.top < character.characterCoords.bottom) {
+				if (tile.left < character.characterCoords.right && tile.right > character.characterCoords.left) {
+					return true;
+				}
+			}
+    	}
+    	return false;	
+    }  
     
 });
 

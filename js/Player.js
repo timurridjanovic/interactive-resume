@@ -10,7 +10,7 @@ Player = Class.extend({
     
     direction: 'down',
     
-    coordX: 90,
+    coordX: 900,
     
     coordY: 100,
     
@@ -38,24 +38,26 @@ Player = Class.extend({
     	this.characterCoords.left = this.coordX;
     	this.characterCoords.right = this.coordX + gGameEngine.tileSize;
     	
-    	
+    	//collision detection happens only when player is moving
     	if (gInputEngine.actions['up'] == true || gInputEngine.actions['down'] == true ||
     		gInputEngine.actions['right'] == true || gInputEngine.actions['left'] == true) {
     		
     		movingFlag = true;
     		
-			//collision with other characters
-			this.characterCollision();
-			
-			//collision detection with collision tiles
-			if (!gGameEngine.intersectRect(gGameEngine.collision, this)) {
+    		//collision with other characters
+    		this.characterCollision(false);
+    				
+    		//collision detection with collision tiles
+			if (gGameEngine.intersectRect(gGameEngine.collision, this)) {
+				gGameEngine.collisionHandler(gGameEngine.collision, this);
+			}   
+			else {
 				this.directionFlag.up = true;
 				this.directionFlag.down = true;
 				this.directionFlag.left = true;
 				this.directionFlag.right = true;
-			}    		
-    		
-    	}    	
+			}
+    	}  	
 
         if (gInputEngine.actions['up'] == true) {
         	this.direction = 'up';
@@ -104,24 +106,28 @@ Player = Class.extend({
        
     },
     
-    
-    characterCollision: function() {
+    //check is true if it's just to check if two tiles intersect and false if I want to call collisionHandler
+    characterCollision: function(check) {
     	for (var i = 0; i < gGameEngine.allCharacters.length; i++) {
     		var name = gGameEngine.allCharacters[i];
     		var character = gGameEngine.characterCollisions[name];
-    		if (!gGameEngine.intersectRect([character], this)) {
-				this.directionFlag.up = true;
-				this.directionFlag.down = true;
-				this.directionFlag.left = true;
-				this.directionFlag.right = true;
+    		if (check) {
+    			if (gGameEngine.intersectRect([character], this)) {
+    				return true;
+    			}
+    			else {
+    				this.directionFlag.up = true;
+					this.directionFlag.down = true;
+					this.directionFlag.left = true;
+					this.directionFlag.right = true;
+    				return false;
+    			}
     		}
+			else {
+				gGameEngine.collisionHandler([character], this);
+			}
     	}
-    
-    		
-
-    	
-    	
     }
-
+    
 
 });
