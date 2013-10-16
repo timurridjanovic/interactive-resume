@@ -18,6 +18,10 @@ Character = Class.extend({
     
     positionTimeTwo: 0,
     
+    characterCoords: {},
+    
+    directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
+    
     init: function(x, y, name, direction) {
         this.coordX = x;
         this.coordY = y;
@@ -29,30 +33,62 @@ Character = Class.extend({
               
             }
         }
+        
+        //keeping track of all object names in a list
+        gGameEngine.allCharacters.push(name);
     
     },
     
     drawCharacter: function() {  
-        if (this.direction == 'down') {
+    	var randomNumber = Math.random() * 200 + 100;
+    	
+    	this.characterCoords.top = this.coordY;
+    	this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
+    	this.characterCoords.left = this.coordX;
+    	this.characterCoords.right = this.coordX + gGameEngine.tileSize;
+    	
+    	//storing coordinates in a collision dict
+    	gGameEngine.characterCollisions[this.imgName] = this.characterCoords;
+    	
+    	//collision with mainPlayer
+        if (!gGameEngine.intersectRect([mainPlayer.characterCoords], this)) {
+    		this.directionFlag.up = true;
+    		this.directionFlag.down = true;
+    		this.directionFlag.left = true;
+    		this.directionFlag.right = true;        
+        }
+       	
+    	
+    	//collision with collision tiles
+        if (!gGameEngine.intersectRect(gGameEngine.collision, this)) {
+    		this.directionFlag.up = true;
+    		this.directionFlag.down = true;
+    		this.directionFlag.left = true;
+    		this.directionFlag.right = true;         
+        }
+        
+    	
+    
+        if (this.direction == 'down' && this.directionFlag.down == true) {
             this.coordY++;
             this.positionTimeOne++;
         }
             
-        if (this.direction == 'up') {
+        if (this.direction == 'up' && this.directionFlag.up == true) {
         	this.coordY--;
         	this.positionTimeTwo++;
         }   
         
-        if (this.positionTimeOne >= 100) {
+        if (this.positionTimeOne >= randomNumber) {
         	this.direction = 'up';
         	this.positionTimeOne = 0;
         }
         
-        if (this.positionTimeTwo >= 100) {
+        if (this.positionTimeTwo >= randomNumber) {
         	this.direction = 'down';
         	this.positionTimeTwo = 0;
         }
-         
+                
         //animation when moving
  
         this.movementTime++;
@@ -69,7 +105,8 @@ Character = Class.extend({
             }
         }
         
-        gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+        gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
+        	this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
        
     }
 

@@ -15,6 +15,10 @@ GameEngine = Class.extend({
     
     characterImgs: [],
     
+    allCharacters: [],
+    
+    characterCollisions: {},
+    
     tilesImgs: {},
     
     images: [],
@@ -69,9 +73,10 @@ GameEngine = Class.extend({
        
         //drawing tiles and player        
         this.drawTiles();
-        mainPlayer.drawPlayer();
         characterOne.drawCharacter();
         characterTwo.drawCharacter();
+        mainPlayer.drawPlayer();
+
         
         //restoring context
         this.ctx.restore();
@@ -163,7 +168,6 @@ GameEngine = Class.extend({
             this.ctx.strokeRect(1, this.canvasHeight/2-25, this.canvasWidth-2, 50);
             this.ctx.fillRect(2, this.canvasHeight/2-25+1, this.canvasWidth*(percentIndex/100)-3, 50-2);
         }
-        
         if (percentIndex >= 100) {
             this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         
@@ -236,7 +240,68 @@ GameEngine = Class.extend({
             }
         }
         this.tilesDrawn = true;
-    }
+    },
+    
+    
+    intersectRect: function(collisionTiles, character) {
+    	
+    	for (var i = 0; i < collisionTiles.length; i++) {
+    		var tile = collisionTiles[i];
+    		var gap = 2;
+    		var upGap = 12;
+    		
+   
+			if (tile.bottom > character.characterCoords.top + upGap && tile.top < character.characterCoords.bottom) {
+				if (tile.left < character.characterCoords.right && tile.right > character.characterCoords.left) {
+					//collision up
+					if (character.characterCoords.top + upGap > tile.top && character.direction == 'up') {
+						character.directionFlag.up = false;
+						character.directionFlag.down = true;
+						character.directionFlag.right = true;
+						character.directionFlag.left = true;
+						character.coordY++;
+						console.log('collision up');
+					}
+					//collision down
+					if (character.characterCoords.bottom < tile.bottom && character.direction == 'down') {
+						character.directionFlag.down = false;
+						character.directionFlag.up = true;
+						character.directionFlag.right = true;
+						character.directionFlag.left = true;
+						character.coordY--;
+						console.log('collision down');
+					}
+					//collision right
+					if (character.characterCoords.right < tile.right + gap && character.direction == 'right') {
+						character.directionFlag.right = false;
+						character.directionFlag.up = true;
+						character.directionFlag.down = true;
+						character.directionFlag.left = true;
+						character.coordX--;
+						console.log('collision right');
+					}
+					//collision left
+					if (character.characterCoords.left > tile.left && character.direction == 'left') {
+						character.directionFlag.left = false;
+						character.directionFlag.right = true;
+						character.directionFlag.up = true;
+						character.directionFlag.down = true;
+						character.coordX++;
+						console.log('collision left');
+					}
+					return true;
+		
+				}
+		
+			}
+
+    	
+    	}
+    	
+    	return false;	
+    
+    }    
+    
 });
 
 gGameEngine = new GameEngine();
