@@ -112,7 +112,7 @@ Player = Class.extend({
             if (check) {
                 if (gGameEngine.intersectRect([character], this)) {
                     return true;
-    		    }
+                }
                 else {
                     this.directionFlag.up = true;
                     this.directionFlag.down = true;
