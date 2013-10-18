@@ -93,15 +93,15 @@ Character = Class.extend({
         }
             
         if (this.direction == 'up' && this.directionFlag.up == true) {
-	        this.coordY--;
+            this.coordY--;
         }   
 
         if (this.direction == 'right' && this.directionFlag.right == true) {
-	        this.coordX++;
+            this.coordX++;
         }
 
         if (this.direction == 'left' && this.directionFlag.left == true) {
-	        this.coordX--;
+            this.coordX--;
         }        
                 
         //animation when moving
@@ -122,7 +122,7 @@ Character = Class.extend({
         }
 
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
-	        this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+            this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
 
         },
 
@@ -137,7 +137,7 @@ Character = Class.extend({
         //while (openList.length > 0) {
 
             if (currentNode === this.destination) {
-	            return cameFrom; 
+                return cameFrom; 
             }
 
 
@@ -167,10 +167,10 @@ Character = Class.extend({
 
         for (var i = 0; i < possibleNeighbors.length; i++) {
             var Gscore = Math.abs(possibleNeighbors[i][0] - this.startingPoint[0]) + 
-	            Math.abs(possibleNeighbors[i][1] - this.startingPoint[1]);
+                Math.abs(possibleNeighbors[i][1] - this.startingPoint[1]);
 	
             var Hscore = Math.abs(this.destination[0] - possibleNeighbors[i][0]) + 
-	            Math.abs(this.destination[1] - possibleNeighbors[i][1]);
+                Math.abs(this.destination[1] - possibleNeighbors[i][1]);
 	
             var Fscore = Gscore + Hscore;            
             
