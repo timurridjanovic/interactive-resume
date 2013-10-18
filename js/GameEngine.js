@@ -41,7 +41,7 @@ GameEngine = Class.extend({
                     {name: "character_three", src: "img/character_three.png"},
                     {name: "character_four", src: "img/character_four.png"},
                     {name: "multi_characters", src: "img/multi_characters.png"}
-                    ],
+                    ],               
     
     
     load: function() {
@@ -54,8 +54,8 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
-        characterOne = new Character(640, 150, 'character_one', 'down');
-        characterTwo = new Character(850, 200, 'character_two', 'down');
+        characterOne = new Character(700, 150, 'character_one', 'down', [640, 300]);
+        characterTwo = new Character(850, 200, 'character_two', 'down', [850, 90]);
         
         this.gameLoop();
         
@@ -71,13 +71,17 @@ GameEngine = Class.extend({
         this.ctx.save();
         this.translateContext();
        
-        //drawing tiles and player        
+        //drawing tiles        
         this.drawTiles();
-        characterOne.drawCharacter();
-        characterTwo.drawCharacter();
-        mainPlayer.drawPlayer();
-
         
+        //drawing player and character sorted by Y axis
+        var sorted = this.sortByYAxis();
+        //loop drawing characters by sorted Y axis
+        for (var i = 0; i < sorted.length; i++) {
+        	sorted[i]['name'].drawCharacter();
+        
+        }
+
         //restoring context
         this.ctx.restore();
         
@@ -244,7 +248,7 @@ GameEngine = Class.extend({
     
     
     collisionHandler: function(collisionTiles, character) {
-    	
+    	character.movingFlag = false;
     	for (var i = 0; i < collisionTiles.length; i++) {
     		var tile = collisionTiles[i];
     		var gap = 2;
@@ -258,7 +262,6 @@ GameEngine = Class.extend({
 						character.directionFlag.right = true;
 						character.directionFlag.left = true;
 						character.coordY++;
-						console.log('collision up');
 					}
 					//collision down
 					if (character.characterCoords.bottom < tile.bottom && character.direction == 'down') {
@@ -267,7 +270,6 @@ GameEngine = Class.extend({
 						character.directionFlag.right = true;
 						character.directionFlag.left = true;
 						character.coordY--;
-						console.log('collision down');
 					}
 					//collision right
 					if (character.characterCoords.right < tile.right + gap && character.direction == 'right') {
@@ -276,7 +278,6 @@ GameEngine = Class.extend({
 						character.directionFlag.down = true;
 						character.directionFlag.left = true;
 						character.coordX--;
-						console.log('collision right');
 					}
 					//collision left
 					if (character.characterCoords.left > tile.left && character.direction == 'left') {
@@ -285,7 +286,6 @@ GameEngine = Class.extend({
 						character.directionFlag.up = true;
 						character.directionFlag.down = true;
 						character.coordX++;
-						console.log('collision left');
 					}
 				}
 			}		
@@ -305,6 +305,20 @@ GameEngine = Class.extend({
 			}
     	}
     	return false;	
+    },
+    
+    
+    sortByYAxis: function() {
+    	this.sorted = [];
+    	this.sorted.push({'name': mainPlayer, 'coordY': mainPlayer.coordY});
+    	this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
+    	this.sorted.push({'name': characterTwo, 'coordY': characterTwo.coordY});
+    	
+    	this.sorted.sort(function (obj1, obj2) {
+    		return obj1.coordY - obj2.coordY;
+    	});
+    	
+    	return this.sorted;
     }  
     
 });

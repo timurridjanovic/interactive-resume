@@ -22,11 +22,13 @@ Character = Class.extend({
     
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
-    init: function(x, y, name, direction) {
+    init: function(x, y, name, direction, destination) {
         this.coordX = x;
         this.coordY = y;
         this.direction = direction;
         this.imgName = name;
+        this.destination = destination;
+        this.startingPoint = [x, y];
         for (var i = 0; i < gGameEngine.images.length; i++) {
             if (gGameEngine.images[i].alt == name) {
                 gGameEngine.characterImgs.push(gGameEngine.images[i]);
@@ -40,7 +42,7 @@ Character = Class.extend({
     },
     
     drawCharacter: function() {  
-    	var randomNumber = Math.random() * 200 + 100;
+    	//var randomNumber = Math.random() * 200 + 100;
     	
     	this.characterCoords.top = this.coordY;
     	this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
@@ -61,58 +63,55 @@ Character = Class.extend({
     	//if the character is not stuck, we can do normal collision detection...
     	else {
     		//collision with mainPlayer
-    		if (gGameEngine.intersectRect([mainPlayer.characterCoords], this)) {
-    			gGameEngine.collisionHandler([mainPlayer.characterCoords], this);
-    		}
-    		else {
+    		if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
 				this.directionFlag.up = true;
 				this.directionFlag.down = true;
 				this.directionFlag.left = true;
 				this.directionFlag.right = true; 
+				this.movingFlag = true;
     		}
     		
     		//collision with collision tiles
-    		if (gGameEngine.intersectRect(gGameEngine.collision, this)) {
-    			gGameEngine.collisionHandler(gGameEngine.collision, this);
-    		
-    		}
-    		else {
-		  		this.directionFlag.up = true;
+			if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
+				this.directionFlag.up = true;
 				this.directionFlag.down = true;
 				this.directionFlag.left = true;
-				this.directionFlag.right = true;   		
-    		}
+				this.directionFlag.right = true;
+				this.movingFlag = true;			
+			}
     		
     	}
+    	
+    	// path finding algo
+    	this.findPath();
+    	
+    	//direction handling
 
 		if (this.direction == 'down' && this.directionFlag.down == true) {
             this.coordY++;
-            this.positionTimeOne++;
         }
             
         if (this.direction == 'up' && this.directionFlag.up == true) {
         	this.coordY--;
-        	this.positionTimeTwo++;
         }   
         
-        if (this.positionTimeOne >= randomNumber) {
-        	this.direction = 'up';
-        	this.positionTimeOne = 0;
+        if (this.direction == 'right' && this.directionFlag.right == true) {
+        	this.coordX++;
         }
         
-        if (this.positionTimeTwo >= randomNumber) {
-        	this.direction = 'down';
-        	this.positionTimeTwo = 0;
-        }
+        if (this.direction == 'left' && this.directionFlag.left == true) {
+        	this.coordX--;
+        }        
                 
         //animation when moving
- 
-        this.movementTime++;
-    
-        if (this.movementTime >= 6) {
-            this.currentFrame = (this.currentFrame%4) + 1;
-            this.movementTime = 0;
-        }        
+        if (this.movingFlag == true) {
+            this.movementTime++;
+        
+            if (this.movementTime >= 6) {
+                this.currentFrame = (this.currentFrame%4) + 1;
+                this.movementTime = 0;
+            }        
+        }       
        
 
         for (var i = 0; i < gGameEngine.characterImgs.length; i++) {
@@ -124,6 +123,42 @@ Character = Class.extend({
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
         	this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
        
+    },
+    
+    
+    aStarPathFinder: function() {
+    	
+    
+    
+    
+		var closedList = [];
+		var openList = [];
+		var cameFrom = [];
+		var currentNode = {};
+		
+		openList.push(this.startingPoint);
+		
+		while (openList.length > 0) {
+			var currentNode.coords = openList.pop();
+			closedList.push(node);
+			
+			if (currentNode.coords === this.destination) {
+				return 
+			}
+			
+			var Gscore = Math.abs(currentNode.coords[0] - this.startingPoint[0]) + 
+				Math.abs(currentNode.coords[1] - this.startingPoint[1]);
+				
+			var Hscore = Math.abs(this.destination[0] - this.currentNode.coords[0]) + 
+				Math.abs(this.destination[1] - this.currentNode.coords[1]);
+				
+			var Fscore = Gscore + Hscore;
+		
+		
+		}
+    	
+    
+    
     }
 
 

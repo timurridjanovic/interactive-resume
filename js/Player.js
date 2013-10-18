@@ -30,7 +30,7 @@ Player = Class.extend({
     
     },
     
-    drawPlayer: function() {
+    drawCharacter: function() {
         var movingFlag = false;
         
         this.characterCoords.top = this.coordY;
@@ -48,15 +48,13 @@ Player = Class.extend({
     		this.characterCollision(false);
     				
     		//collision detection with collision tiles
-			if (gGameEngine.intersectRect(gGameEngine.collision, this)) {
-				gGameEngine.collisionHandler(gGameEngine.collision, this);
-			}   
-			else {
+			if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
 				this.directionFlag.up = true;
 				this.directionFlag.down = true;
 				this.directionFlag.left = true;
-				this.directionFlag.right = true;
+				this.directionFlag.right = true;			
 			}
+
     	}  	
 
         if (gInputEngine.actions['up'] == true) {
