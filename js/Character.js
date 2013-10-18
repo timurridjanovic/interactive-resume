@@ -38,6 +38,9 @@ Character = Class.extend({
         
         //keeping track of all object names in a list
         gGameEngine.allCharacters.push(name);
+        
+        // path finding algo
+    	this.path = this.aStarPathFinder();
     
     },
     
@@ -82,8 +85,6 @@ Character = Class.extend({
     		
     	}
     	
-    	// path finding algo
-    	this.findPath();
     	
     	//direction handling
 
@@ -127,38 +128,65 @@ Character = Class.extend({
     
     
     aStarPathFinder: function() {
-    	
-    
-    
-    
 		var closedList = [];
 		var openList = [];
-		var cameFrom = [];
-		var currentNode = {};
+		var currentNode = this.startingPoint;
 		
-		openList.push(this.startingPoint);
+		openList.push(currentNode);
 		
-		while (openList.length > 0) {
-			var currentNode.coords = openList.pop();
-			closedList.push(node);
+		//while (openList.length > 0) {
 			
-			if (currentNode.coords === this.destination) {
-				return 
+			if (currentNode === this.destination) {
+				return cameFrom; 
 			}
 			
-			var Gscore = Math.abs(currentNode.coords[0] - this.startingPoint[0]) + 
-				Math.abs(currentNode.coords[1] - this.startingPoint[1]);
-				
-			var Hscore = Math.abs(this.destination[0] - this.currentNode.coords[0]) + 
-				Math.abs(this.destination[1] - this.currentNode.coords[1]);
-				
-			var Fscore = Gscore + Hscore;
-		
-		
-		}
-    	
+			
+			var n = this.getNeighbor(currentNode);
+			
+			currentNode = n;
+			
+	
+			
+			
+		//}
+    },
     
     
+    getNeighbor: function(currentNode) {
+        var possibleNeighbors = [];
+        var currentNodeX = currentNode[0];
+        var currentNodeY = currentNode[1];
+        
+        possibleNeighbors.push([currentNodeX + 1, currentNodeY]);
+        possibleNeighbors.push([currentNodeX - 1, currentNodeY]);
+        possibleNeighbors.push([currentNodeX, currentNodeY + 1]);
+        possibleNeighbors.push([currentNodeX, currentNodeY - 1]);
+        
+        var bestScore = 1000000;
+        var bestNeighbor = null;
+        
+        for (var i = 0; i < possibleNeighbors.length; i++) {
+		    var Gscore = Math.abs(possibleNeighbors[i][0] - this.startingPoint[0]) + 
+			    Math.abs(possibleNeighbors[i][1] - this.startingPoint[1]);
+			
+		    var Hscore = Math.abs(this.destination[0] - possibleNeighbors[i][0]) + 
+			    Math.abs(this.destination[1] - possibleNeighbors[i][1]);
+			
+		    var Fscore = Gscore + Hscore;            
+		    
+		    if (Fscore < bestScore) {
+		        var neighbor = {};
+		        neighbor.characterCoords = {'top': possibleNeighbors[i][1], 'bottom': possibleNeighbors[i][1] + gGameEngine.tileSize, 
+		            'right': possibleNeighbors[i][0] + gGameEngine.tileSize, 'left': possibleNeighbors[i][1]};
+		            
+		        if (!gGameEngine.intersectRect(gGameEngine.collision, neighbor)) {
+		            bestScore = Fscore;
+		            bestNeighbor = possibleNeighbors[i];		        
+		        }
+		    }
+        }
+        
+        return bestNeighbor;
     }
 
 
