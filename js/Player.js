@@ -13,8 +13,8 @@ Player = Class.extend({
     coordX: 900,
     
     coordY: 100,
-    
-    characterCoords: {},
+   	
+	characterCoords: {},
     
 	characterCoordsList: [],
 	
