@@ -127,7 +127,7 @@ Character = Class.extend({
         },
 
 
-        aStarPathFinder: function() {
+    aStarPathFinder: function() {
         var closedList = [];
         var openList = [];
         var currentNode = this.startingPoint;
@@ -135,24 +135,24 @@ Character = Class.extend({
         openList.push(currentNode);
 
         //while (openList.length > 0) {
-	
-	        if (currentNode === this.destination) {
-		        return cameFrom; 
-	        }
-	
-	
-	        var n = this.getNeighbor(currentNode);
-	
-	        currentNode = n;
-	
 
-	
-	
+            if (currentNode === this.destination) {
+	            return cameFrom; 
+            }
+
+
+            var n = this.getNeighbor(currentNode);
+
+            currentNode = n;
+
+
+
+
         //}
-        },
+    },
 
 
-        getNeighbor: function(currentNode) {
+    getNeighbor: function(currentNode) {
         var possibleNeighbors = [];
         var currentNodeX = currentNode[0];
         var currentNodeY = currentNode[1];
@@ -187,7 +187,7 @@ Character = Class.extend({
         }
 
         return bestNeighbor;
-        }
+    }
 
 
-        });
+});
