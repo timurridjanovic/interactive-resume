@@ -14,11 +14,11 @@ Player = Class.extend({
     
     coordY: 100,
    	
-	characterCoords: {},
+    characterCoords: {},
     
-	characterCoordsList: [],
+    characterCoordsList: [],
 	
-	directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
+    directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function() {	
         for (var i = 0; i < gGameEngine.images.length; i++) {
