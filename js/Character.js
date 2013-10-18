@@ -57,31 +57,31 @@ Character = Class.extend({
 
         //checking to see if character is stuck in between 2 tiles
         if (gGameEngine.intersectRect([mainPlayer.characterCoords], this) && gGameEngine.intersectRect(gGameEngine.collision, this)) {
-	        console.log('stuck');
-	        this.directionFlag.up = false;
-	        this.directionFlag.down = false;
-	        this.directionFlag.left = false;
-	        this.directionFlag.right = false;    
+            console.log('stuck');
+            this.directionFlag.up = false;
+            this.directionFlag.down = false;
+            this.directionFlag.left = false;
+            this.directionFlag.right = false;    
         }
         //if the character is not stuck, we can do normal collision detection...
         else {
-	        //collision with mainPlayer
-	        if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
-		        this.directionFlag.up = true;
-		        this.directionFlag.down = true;
-		        this.directionFlag.left = true;
-		        this.directionFlag.right = true; 
-		        this.movingFlag = true;
-	        }
-	
-	        //collision with collision tiles
-	        if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
-		        this.directionFlag.up = true;
-		        this.directionFlag.down = true;
-		        this.directionFlag.left = true;
-		        this.directionFlag.right = true;
-		        this.movingFlag = true;			
-	        }
+            //collision with mainPlayer
+            if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
+                this.directionFlag.up = true;
+                this.directionFlag.down = true;
+                this.directionFlag.left = true;
+                this.directionFlag.right = true; 
+                this.movingFlag = true;
+            }
+
+            //collision with collision tiles
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
+                this.directionFlag.up = true;
+                this.directionFlag.down = true;
+                this.directionFlag.left = true;
+                this.directionFlag.right = true;
+                this.movingFlag = true;			
+            }
 	
         }
 
