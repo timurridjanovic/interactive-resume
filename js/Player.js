@@ -31,9 +31,9 @@ Player = Class.extend({
     },
     
     drawCharacter: function() {
-	    var movingFlag = false;
+        var movingFlag = false;
         
-	    this.characterCoords.top = this.coordY;
+        this.characterCoords.top = this.coordY;
         this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
         this.characterCoords.left = this.coordX;
         this.characterCoords.right = this.coordX + gGameEngine.tileSize;
@@ -48,19 +48,19 @@ Player = Class.extend({
     	    this.characterCollision(false);
     				
     	    //collision detection with collision tiles
-		    if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
-			    this.directionFlag.up = true;
-			    this.directionFlag.down = true;
-			    this.directionFlag.left = true;
-			    this.directionFlag.right = true;			
-		    }
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
+                this.directionFlag.up = true;
+                this.directionFlag.down = true;
+                this.directionFlag.left = true;
+                this.directionFlag.right = true;			
+            }
 
         }  	
 
         if (gInputEngine.actions['up'] == true) {
             this.direction = 'up';
             if (this.directionFlag.up == true) {
-		        this.coordY -= 1;       	
+                this.coordY -= 1;       	
             }        
         }
         
@@ -74,14 +74,14 @@ Player = Class.extend({
         else if (gInputEngine.actions['left'] == true) {
             this.direction = 'left';
             if (this.directionFlag.left == true) {
-			    this.coordX -= 1;        	
+                this.coordX -= 1;        	
             }
         }
         
         else if (gInputEngine.actions['right'] == true) {
             this.direction = 'right';   
             if (this.directionFlag.right == true) {     
-		        this.coordX += 1;        	
+                this.coordX += 1;        	
             }                   
         }    
         
@@ -99,7 +99,7 @@ Player = Class.extend({
        
         gGameEngine.ctx.drawImage(gGameEngine.mainPlayerImg, 
             this.frameX[this.currentFrame], this.frameY[this.direction], 32, 32, 
-        	    this.coordX, this.coordY, 32, 32);
+                this.coordX, this.coordY, 32, 32);
         
        
     },
@@ -107,23 +107,23 @@ Player = Class.extend({
     //check is true if it's just to check if two tiles intersect and false if I want to call collisionHandler
     characterCollision: function(check) {
         for (var i = 0; i < gGameEngine.allCharacters.length; i++) {
-    	    var name = gGameEngine.allCharacters[i];
-    	    var character = gGameEngine.characterCollisions[name];
-    	    if (check) {
-    		    if (gGameEngine.intersectRect([character], this)) {
-    			    return true;
+            var name = gGameEngine.allCharacters[i];
+            var character = gGameEngine.characterCollisions[name];
+            if (check) {
+                if (gGameEngine.intersectRect([character], this)) {
+                    return true;
     		    }
-    		    else {
-    			    this.directionFlag.up = true;
-				    this.directionFlag.down = true;
-				    this.directionFlag.left = true;
-				    this.directionFlag.right = true;
-    			    return false;
-    		    }
-    	    }
-		    else {
-			    gGameEngine.collisionHandler([character], this);
-		    }
+                else {
+                    this.directionFlag.up = true;
+                    this.directionFlag.down = true;
+                    this.directionFlag.left = true;
+                    this.directionFlag.right = true;
+                    return false;
+                }
+            }
+            else {
+                gGameEngine.collisionHandler([character], this);
+            }
         }
     }
     
