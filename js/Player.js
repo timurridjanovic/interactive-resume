@@ -31,21 +31,21 @@ Player = Class.extend({
     },
     
 	drawCharacter: function() {
-		var movingFlag = false;
+	    var movingFlag = false;
         
-		this.characterCoords.top = this.coordY;
-    	this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
-    	this.characterCoords.left = this.coordX;
-    	this.characterCoords.right = this.coordX + gGameEngine.tileSize;
+	    this.characterCoords.top = this.coordY;
+        this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
+        this.characterCoords.left = this.coordX;
+        this.characterCoords.right = this.coordX + gGameEngine.tileSize;
     	
     	//collision detection happens only when player is moving
     	if (gInputEngine.actions['up'] == true || gInputEngine.actions['down'] == true ||
-    		gInputEngine.actions['right'] == true || gInputEngine.actions['left'] == true) {
+    	    gInputEngine.actions['right'] == true || gInputEngine.actions['left'] == true) {
     		
-    		movingFlag = true;
+    	    movingFlag = true;
     		
-    		//collision with other characters
-    		this.characterCollision(false);
+    	    //collision with other characters
+    	    this.characterCollision(false);
     				
     		//collision detection with collision tiles
 			if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
@@ -121,9 +121,9 @@ Player = Class.extend({
     				return false;
     			}
     		}
-			else {
-				gGameEngine.collisionHandler([character], this);
-			}
+		    else {
+			    gGameEngine.collisionHandler([character], this);
+		    }
     	}
     }
     
