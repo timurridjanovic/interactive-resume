@@ -21,7 +21,7 @@ Player = Class.extend({
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function() {	
-        for (var i = 0; i < gGameEngine.images.length; i++) {
+       	for (var i = 0; i < gGameEngine.images.length; i++) {
             if (gGameEngine.images[i].alt == "mainPlayer") {
                 gGameEngine.mainPlayerImg = gGameEngine.images[i];
               
@@ -30,10 +30,10 @@ Player = Class.extend({
     
     },
     
-    drawCharacter: function() {
-        var movingFlag = false;
+	drawCharacter: function() {
+		var movingFlag = false;
         
-        this.characterCoords.top = this.coordY;
+		this.characterCoords.top = this.coordY;
     	this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
     	this.characterCoords.left = this.coordX;
     	this.characterCoords.right = this.coordX + gGameEngine.tileSize;
