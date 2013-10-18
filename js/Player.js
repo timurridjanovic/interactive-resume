@@ -21,7 +21,7 @@ Player = Class.extend({
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function() {	
-       	for (var i = 0; i < gGameEngine.images.length; i++) {
+        for (var i = 0; i < gGameEngine.images.length; i++) {
             if (gGameEngine.images[i].alt == "mainPlayer") {
                 gGameEngine.mainPlayerImg = gGameEngine.images[i];
               
