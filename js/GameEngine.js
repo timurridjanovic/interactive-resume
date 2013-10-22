@@ -54,8 +54,8 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
-        //characterOne = new Character(700, 150, 'character_one', 'down', [640, 300]);
-        characterTwo = new Character(832, 192, 'character_two', 'down', [960, 224]);
+        characterOne = new Character(700, 150, 'character_one', 'up', [750, 300]);
+        characterTwo = new Character(850, 200, 'character_two', 'down', [700, 200]);
         
         this.gameLoop();
         
@@ -311,7 +311,7 @@ GameEngine = Class.extend({
     sortByYAxis: function() {
     	this.sorted = [];
     	this.sorted.push({'name': mainPlayer, 'coordY': mainPlayer.coordY});
-    	//this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
+    	this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
     	this.sorted.push({'name': characterTwo, 'coordY': characterTwo.coordY});
     	
     	this.sorted.sort(function (obj1, obj2) {

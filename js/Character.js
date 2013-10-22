@@ -23,12 +23,16 @@ Character = Class.extend({
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function(x, y, name, direction, destination) {
-        this.coordX = x;
-        this.coordY = y;
+        //making x and y coords divisible by the tileSize
+        this.coordX = Math.floor(x / gGameEngine.tileSize) * gGameEngine.tileSize;
+        this.coordY = Math.floor(y / gGameEngine.tileSize) * gGameEngine.tileSize;
+        
         this.direction = direction;
         this.imgName = name;
-        this.destination = destination;
-        this.startingPoint = [x, y];
+        this.destination = [Math.floor(destination[0] / gGameEngine.tileSize) * gGameEngine.tileSize,
+                            Math.floor(destination[1] / gGameEngine.tileSize) * gGameEngine.tileSize];
+                            
+        this.startingPoint = [this.coordX, this.coordY];
         for (var i = 0; i < gGameEngine.images.length; i++) {
             if (gGameEngine.images[i].alt == name) {
                 gGameEngine.characterImgs.push(gGameEngine.images[i]);
@@ -41,7 +45,7 @@ Character = Class.extend({
         
         // Index for path finding algo
         this.path = [];
-        this.pathIndex = 1;
+        this.pathIndex = 0;
         this.pathSet = false;
     
     },
@@ -67,12 +71,14 @@ Character = Class.extend({
         //if the character is not stuck, we can do normal collision detection...
         else {
             //collision with mainPlayer
-            if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
-                this.directionFlag.up = true;
-                this.directionFlag.down = true;
-                this.directionFlag.left = true;
-                this.directionFlag.right = true; 
-                this.movingFlag = true;
+            if (this.movingFlag == true) {
+                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
+                    this.directionFlag.up = true;
+                    this.directionFlag.down = true;
+                    this.directionFlag.left = true;
+                    this.directionFlag.right = true; 
+                    this.movingFlag = true;
+                }
             }
 
             //collision with collision tiles
@@ -93,27 +99,40 @@ Character = Class.extend({
             this.pathSet = true;
         }
             
-        
+        //path index (starts at 1)
         var i = this.pathIndex;
         
-        if (this.coordX < this.path[i].x) 
-            this.direction = 'right';
-        if (this.coordX > this.path[i].x)
-            this.direction = 'left';
-        if (this.coordY < this.path[i].y)
-            this.direction = 'down';
-        if (this.coordY > this.path[i].y)
-            this.direction = 'up';
+        //increment path if you get to node of path
+        if (this.coordX == this.path[i].x && this.coordY == this.path[i].y) {
+            this.pathIndex++;
+            i++;
+        }
+        
+        if (this.path.length > 1) {
+            if (this.coordX < this.path[i].x) 
+                this.direction = 'right';
+            if (this.coordX > this.path[i].x)
+                this.direction = 'left';
+            if (this.coordY < this.path[i].y)
+                this.direction = 'down';
+            if (this.coordY > this.path[i].y)
+                this.direction = 'up';        
+        }
+        
+        else { // if there is no path, the bot is not moving
+            this.directionFlag.up = false;
+            this.directionFlag.down = false;
+            this.directionFlag.left = false;
+            this.directionFlag.right = false; 
+            this.movingFlag = false;        
+        }
         
         //what happens when you're at the end of the path...    
         if (this.pathIndex >= this.path.length - 1) {
             this.path = this.path.reverse();
-            this.pathIndex = 1;
+            this.pathIndex = 0;
         }
-        //increment path if you get to node of path
-        if (this.coordX == this.path[i].x && this.coordY == this.path[i].y) {
-            this.pathIndex++;
-        }
+
           
         
         //direction handling
@@ -153,13 +172,6 @@ Character = Class.extend({
         //drawing
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
             this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
-            
-                
-                
-        //for (var i = 0; i < this.path.length; i++) {
-            //gGameEngine.ctx.fillRect(this.path[i].x, this.path[i].y, 32, 32);
-        //}    
-
     },
 
 
@@ -190,7 +202,6 @@ Character = Class.extend({
             
             //Set it as our current node
             var current_node = open[best_node];  
-            console.log(current_node.x, current_node.y);  
         
             //Check if we've reached our destination
             if (current_node.x == destination.x && current_node.y == destination.y) {
