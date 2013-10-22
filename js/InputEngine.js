@@ -13,6 +13,7 @@ we want to take when a key is pressed*/
         this.bind(37, 'left');
         this.bind(40, 'down');
         this.bind(39, 'right');
+        this.bind(32, 'space');
         
         document.addEventListener('keydown', this.onKeyDown);
         document.addEventListener('keyup', this.onKeyUp);

@@ -71,7 +71,7 @@ Character = Class.extend({
         //if the character is not stuck, we can do normal collision detection...
         else {
             //collision with mainPlayer
-            if (this.movingFlag == true) {
+            if (this.movingFlag == true) { //collision detection with player happens only if bot is moving
                 if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
                     this.directionFlag.up = true;
                     this.directionFlag.down = true;
@@ -79,7 +79,8 @@ Character = Class.extend({
                     this.directionFlag.right = true; 
                     this.movingFlag = true;
                 }
-            }
+            }    
+            
 
             //collision with collision tiles
             if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
@@ -89,7 +90,6 @@ Character = Class.extend({
                 this.directionFlag.right = true;
                 this.movingFlag = true;			
             }
-	
         }
 
         
@@ -120,11 +120,7 @@ Character = Class.extend({
         }
         
         else { // if there is no path, the bot is not moving
-            this.directionFlag.up = false;
-            this.directionFlag.down = false;
-            this.directionFlag.left = false;
-            this.directionFlag.right = false; 
-            this.movingFlag = false;        
+            this.stopMoving();      
         }
         
         //what happens when you're at the end of the path...    
@@ -133,7 +129,8 @@ Character = Class.extend({
             this.pathIndex = 0;
         }
 
-          
+        //check for space event 
+        this.checkSpaceEvent();    
         
         //direction handling
 
@@ -161,7 +158,8 @@ Character = Class.extend({
                 this.currentFrame = (this.currentFrame%4) + 1;
                 this.movementTime = 0;
             }        
-        }       
+        }  
+        
 
         //selecting character img to draw
         for (var i = 0; i < gGameEngine.characterImgs.length; i++) {
@@ -286,6 +284,44 @@ Character = Class.extend({
 	    this.g = g;
 	    this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	    this.f = this.g + this.h;    
+    },
+    
+    checkSpaceEvent: function() {
+        var gapUp = 12;
+        if (gInputEngine.actions['space'] == true) {
+            //mainPlayer is on the right of the bot
+            if (mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1 || mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 2) {
+                this.direction = 'right';
+                this.stopMoving();
+            }    
+            
+            if (mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX || mainPlayer.coordX + gGameEngine.tileSize - 2 == this.coordX) {
+                this.direction = 'left';
+                this.stopMoving();
+            } 
+            
+            if (mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY || mainPlayer.coordY + gGameEngine.tileSize - 2 - gapUp == this.coordY) {
+                this.direction = 'up';
+                this.stopMoving();
+            }
+            
+            if (mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp || mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 2 - gapUp) {
+                this.direction = 'down';
+                this.stopMoving(); 
+            }
+            
+                
+        
+        }  
+    },
+    
+    
+    stopMoving: function() {
+        this.directionFlag.up = false;
+        this.directionFlag.down = false;
+        this.directionFlag.left = false;
+        this.directionFlag.right = false; 
+        this.movingFlag = false;  
     }
 
 
