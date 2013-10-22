@@ -110,8 +110,8 @@ Character = Class.extend({
             this.path = this.path.reverse();
             this.pathIndex = 1;
         }
-        //else increment path
-        else {
+        //increment path if you get to node of path
+        if (this.coordX == this.path[i].x && this.coordY == this.path[i].y) {
             this.pathIndex++;
         }
           
@@ -212,10 +212,10 @@ Character = Class.extend({
             
             //Check to see the best neighbor (in all 4 directions)
             var neighbor_list = [];
-            neighbor_list.push([current_node.x + 1, current_node.y]);
-            neighbor_list.push([current_node.x - 1, current_node.y]);
-            neighbor_list.push([current_node.x, current_node.y + 1]);
-            neighbor_list.push([current_node.x, current_node.y - 1]);
+            neighbor_list.push([current_node.x + gGameEngine.tileSize, current_node.y]);
+            neighbor_list.push([current_node.x - gGameEngine.tileSize, current_node.y]);
+            neighbor_list.push([current_node.x, current_node.y + gGameEngine.tileSize]);
+            neighbor_list.push([current_node.x, current_node.y - gGameEngine.tileSize]);
             
             for (var j = 0; j < neighbor_list.length; j++) {
                 var new_node_x = Math.max(0, neighbor_list[j][0]);
@@ -260,10 +260,6 @@ Character = Class.extend({
                             this.startingPoint, this.destination, current_node.g+1);
                         open.push(new_node);    
                     }      	        
-                }
-                else {
-                    current_node.g = 100000; 
-                    current_node.f = current_node.g + current_node.h;
                 }
             }
         }
