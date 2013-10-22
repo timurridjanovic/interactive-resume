@@ -39,12 +39,14 @@ Character = Class.extend({
         //keeping track of all object names in a list
         gGameEngine.allCharacters.push(name);
         
-        // path finding algo
-        this.path = this.aStarPathFinder();
+        // Index for path finding algo
+        this.path = [];
+        this.pathIndex = 1;
+        this.pathSet = false;
     
     },
     
-    drawCharacter: function() {  
+    drawCharacter: function() { 
     	
         this.characterCoords.top = this.coordY;
         this.characterCoords.bottom = this.coordY + gGameEngine.tileSize;
@@ -84,10 +86,35 @@ Character = Class.extend({
 	
         }
 
-        //a* path finding
-        //for (var i in this.path) {
-            //if (this.coordX this.path[i]
-        //}
+        
+        //a* path finding 
+        if (this.pathSet == false) {
+            this.path = this.aStarPathFinder(); // execute this only once
+            this.pathSet = true;
+        }
+            
+        
+        var i = this.pathIndex;
+        
+        if (this.coordX < this.path[i].x) 
+            this.direction = 'right';
+        if (this.coordX > this.path[i].x)
+            this.direction = 'left';
+        if (this.coordY < this.path[i].y)
+            this.direction = 'down';
+        if (this.coordY > this.path[i].y)
+            this.direction = 'up';
+        
+        //what happens when you're at the end of the path...    
+        if (this.pathIndex >= this.path.length - 1) {
+            this.path = this.path.reverse();
+            this.pathIndex = 1;
+        }
+        //else increment path
+        else {
+            this.pathIndex++;
+        }
+          
         
         //direction handling
 
@@ -126,23 +153,25 @@ Character = Class.extend({
         //drawing
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
             this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+            
+                
+                
+        //for (var i = 0; i < this.path.length; i++) {
+            //gGameEngine.ctx.fillRect(this.path[i].x, this.path[i].y, 32, 32);
+        //}    
 
     },
 
 
     aStarPathFinder: function() {
-        var start = new this.node(this.startingPoint[0], this.startingPoint[1], -1, -1, -1, -1);
-        var destination = new this.node(this.destination[0], this.destination[1], -1, -1, -1, -1);
+        var start = new this.node(this.startingPoint[0], this.startingPoint[1], -1, this.startingPoint, this.destination, 0);
+        var destination = new this.node(this.destination[0], this.destination[1], -1, this.startingPoint, this.destination, 0);
         var columns = gGameEngine.tilesY * gGameEngine.tileSize;
         var rows = gGameEngine.tilesY * gGameEngine.tileSize;
         
         var open = [];
         var closed = [];
-        
-        var g = 0; //Cost from start to current node
-        var h = this.heuristic(start, destination);
-        var f = g + h;
-        
+
         //Push the start node onto the list of open nodes
         open.push(start);
         
@@ -152,7 +181,7 @@ Character = Class.extend({
             var best_cost = open[0].f;
             var best_node = 0;
             
-            for (var i = 1; i < open.length; i++) {
+            for (var i = 0; i < open.length; i++) {
                 if (open[i].f < best_cost) {
                     best_cost = open[i].f;
                     best_node = i;
@@ -160,7 +189,8 @@ Character = Class.extend({
             }
             
             //Set it as our current node
-            var current_node = open[best_node];    
+            var current_node = open[best_node];  
+            console.log(current_node.x, current_node.y);  
         
             //Check if we've reached our destination
             if (current_node.x == destination.x && current_node.y == destination.y) {
@@ -171,7 +201,6 @@ Character = Class.extend({
                     current_node = closed[current_node.parent_index];
                     path.unshift(current_node);
                 }
-                console.log(path);
                 return path;            
             }
             
@@ -182,58 +211,60 @@ Character = Class.extend({
             closed.push(current_node);
             
             //Check to see the best neighbor (in all 4 directions)
-            for (var new_node_x = Math.max(0, current_node.x-1); new_node_x <= 
-                Math.min(columns-1, current_node.x+1); new_node_x++) {
-                for (var new_node_y = Math.max(0, current_node.y-1); new_node_y <= 
-                    Math.min(rows-1, current_node.y+1); new_node_y++) {
+            var neighbor_list = [];
+            neighbor_list.push([current_node.x + 1, current_node.y]);
+            neighbor_list.push([current_node.x - 1, current_node.y]);
+            neighbor_list.push([current_node.x, current_node.y + 1]);
+            neighbor_list.push([current_node.x, current_node.y - 1]);
+            
+            for (var j = 0; j < neighbor_list.length; j++) {
+                var new_node_x = Math.max(0, neighbor_list[j][0]);
+                var new_node_y = Math.max(0, neighbor_list[j][1]);
+                
+                //disallow diagonals
+				//if (new_node_x != current_node.x && new_node_y != current_node.y)
+					//continue;                    
+                // transformation into data structure which our method intersectRect can take
+                var neighbor = {};
+                neighbor.characterCoords = {'top': new_node_y, 
+                                            'bottom': new_node_y + gGameEngine.tileSize, 
+                                            'right': new_node_x + gGameEngine.tileSize, 
+                                            'left': new_node_x};
+                //if new node is open                            
+                if (!gGameEngine.intersectRect(gGameEngine.collision, neighbor)
+                    || (destination.x == new_node_x && destination.y == new_node_y)) { //or new node is our destination
                     
-                    //disallow diagonals
-					if (new_node_x != current_node.x && new_node_y != current_node.y)
-						continue;                    
-                    // transformation into data structure which our method intersectRect can take
-                    var neighbor = {};
-                    neighbor.characterCoords = {'top': new_node_y, 
-                                                'bottom': new_node_y + gGameEngine.tileSize, 
-                                                'right': new_node_x + gGameEngine.tileSize, 
-                                                'left': new_node_x};
-                    //if new node is open                            
-                    if (!gGameEngine.intersectRect(gGameEngine.collision, neighbor)
-                        || (destination.x == new_node_x && destination.y == new_node_y)) { //or new node is our destination
-                        
-                        //see if the node is already in our closed list.
-                        var found_in_closed = false;
-                        for (var i in closed) {
-                            if (closed[i].x == new_node_x && closed[i].y == new_node_y) {
-                                found_in_closed = true;
-                                break;
-                            }
+                    //see if the node is already in our closed list.
+                    var found_in_closed = false;
+                    for (var i = 0; i < closed.length; i++) {
+                        if (closed[i].x == new_node_x && closed[i].y == new_node_y) {
+                            found_in_closed = true;
+                            break;
                         }
-                        
-                        if (found_in_closed)
-                            continue;
-                            
-                        //See if the node is in our open list. If not, use it.
-                        var found_in_open = false;
-                        for (var i in open) {
-                            if (open[i].x == new_node_x && open[i].y == new_node_y) {
-                                found_in_open = true;
-                                break;
-                            }
-                        }
-                        
-                        if (!found_in_open) {
-                            var new_node = new this.node(new_node_x, new_node_y, closed.length-1, -1, -1, -1);
-                            
-                            new_node.g = current_node.g + Math.floor(Math.sqrt(Math.pow(new_node.x - current_node.x, 2) + 
-                                Math.pow(new_node.y - current_node.y, 2)));
-                                
-                            new_node.h = this.heuristic(new_node, destination);
-                            new_node.f = new_node.g + new_node.h;
-                            
-                            open.push(new_node);    
-                        }      	        
                     }
-                }       
+                    
+                    if (found_in_closed)
+                        continue;
+                        
+                    //See if the node is in our open list. If not, use it.
+                    var found_in_open = false;
+                    for (var i = 0; i < open.length; i++) {
+                        if (open[i].x == new_node_x && open[i].y == new_node_y) {
+                            found_in_open = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!found_in_open) {
+                        var new_node = new this.node(new_node_x, new_node_y, closed.length-1, 
+                            this.startingPoint, this.destination, current_node.g+1);
+                        open.push(new_node);    
+                    }      	        
+                }
+                else {
+                    current_node.g = 100000; 
+                    current_node.f = current_node.g + current_node.h;
+                }
             }
         }
         
@@ -241,21 +272,13 @@ Character = Class.extend({
     },
     
     
-    heuristic: function(current_node, destination) {
-	    var x = current_node.x-destination.x;
-	    var y = current_node.y-destination.y;
-	    return x*x+y*y;
-        
-    },
-    
-    
-    node: function(x, y, parent_index, g, h, f) {
+    node: function(x, y, parent_index, startingPoint, destination, g) {
 	    this.x = x;
 	    this.y = y;
 	    this.parent_index = parent_index;
 	    this.g = g;
-	    this.h = h;
-	    this.f = f;    
+	    this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
+	    this.f = this.g + this.h;    
     }
 
 
