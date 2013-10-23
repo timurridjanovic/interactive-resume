@@ -200,13 +200,7 @@
                     return Node.recreatePath(destination, closed);
                 }
 
-                //Check to see the best neighbor (in all 4 directions)
-                var neighbor_list = [];
-                neighbor_list.push([current_node.x + gGameEngine.tileSize, current_node.y]);
-                neighbor_list.push([current_node.x - gGameEngine.tileSize, current_node.y]);
-                neighbor_list.push([current_node.x, current_node.y + gGameEngine.tileSize]);
-                neighbor_list.push([current_node.x, current_node.y - gGameEngine.tileSize]);
-
+                var neighbor_list = current_node.neighbours();
                 for (var j = 0; j < neighbor_list.length; j++) {
                     var new_node_x = Math.max(0, neighbor_list[j][0]);
                     var new_node_y = Math.max(0, neighbor_list[j][1]);
@@ -309,6 +303,17 @@
 	      this.g = g;
 	      this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	      this.f = this.g + this.h;
+    };
+
+    Node.prototype = {
+        neighbours: function() {
+            var neighbors = [];
+            neighbors.push([this.x + gGameEngine.tileSize, this.y]);
+            neighbors.push([this.x - gGameEngine.tileSize, this.y]);
+            neighbors.push([this.x, this.y + gGameEngine.tileSize]);
+            neighbors.push([this.x, this.y - gGameEngine.tileSize]);
+            return neighbors;
+        }
     };
 
     Node.sortByCost = function(nodes) {
