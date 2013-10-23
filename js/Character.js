@@ -179,8 +179,6 @@
                                  this.destination, 0);
             var destination = new Node(this.destination[0], this.destination[1], undefined,
                                        this.destination, 0);
-            var columns = gGameEngine.tilesY * gGameEngine.tileSize;
-            var rows = gGameEngine.tilesY * gGameEngine.tileSize;
 
             var open = [];
             var closed = [];
