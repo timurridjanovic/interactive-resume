@@ -202,18 +202,6 @@
 
                 var neighbor_list = current_node.neighbours();
                 for (var j = 0; j < neighbor_list.length; j++) {
-                    var new_node_x = Math.max(0, neighbor_list[j][0]);
-                    var new_node_y = Math.max(0, neighbor_list[j][1]);
-
-                    //disallow diagonals
-				            //if (new_node_x != current_node.x && new_node_y != current_node.y)
-					          //continue;
-                    // transformation into data structure which our method intersectRect can take
-                    var neighbor = {};
-                    neighbor.characterCoords = {'top': new_node_y,
-                                                'bottom': new_node_y + gGameEngine.tileSize,
-                                                'right': new_node_x + gGameEngine.tileSize,
-                                                'left': new_node_x};
                     //if new node is open
                     if (!neighbor.colliding()) {
                         //see if the node is already in our closed list.
