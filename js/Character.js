@@ -200,7 +200,7 @@
                     return destination.recreatePath();
                 }
 
-                var neighbor_list = current_node.neighbors(this.destination, closed.length-1);
+                var neighbor_list = current_node.neighbors(this.destination);
                 for (var j = 0; j < neighbor_list.length; j++) {
                     var neighbor = neighbor_list[j];
                     //if new node is open
