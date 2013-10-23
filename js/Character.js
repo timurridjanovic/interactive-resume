@@ -200,8 +200,9 @@
                     return Node.recreatePath(destination, closed);
                 }
 
-                var neighbor_list = current_node.neighbours();
+                var neighbor_list = current_node.neighbors(this.destination, closed.length-1);
                 for (var j = 0; j < neighbor_list.length; j++) {
+                    var neighbor = neighbor_list[j];
                     //if new node is open
                     if (!neighbor.colliding()) {
                         //see if the node is already in our closed list.
@@ -292,12 +293,17 @@
     };
 
     Node.prototype = {
-        neighbours: function() {
+        neighbors: function(destination, parentIndex) {
             var neighbors = [];
-            neighbors.push([this.x + gGameEngine.tileSize, this.y]);
-            neighbors.push([this.x - gGameEngine.tileSize, this.y]);
-            neighbors.push([this.x, this.y + gGameEngine.tileSize]);
-            neighbors.push([this.x, this.y - gGameEngine.tileSize]);
+            var g = this.g + 1;
+            neighbors.push(new Node(this.x + gGameEngine.tileSize, this.y, parentIndex,
+                                    undefined, destination, g));
+            neighbors.push(new Node(this.x - gGameEngine.tileSize, this.y, parentIndex,
+                                    undefined, destination, g));
+            neighbors.push(new Node(this.x, this.y + gGameEngine.tileSize, parentIndex,
+                                    undefined, destination, g));
+            neighbors.push(new Node(this.x, this.y - gGameEngine.tileSize, parentIndex,
+                                    undefined, destination, g));
             return neighbors;
         },
 
