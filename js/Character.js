@@ -289,30 +289,37 @@ Character = Class.extend({
     checkSpaceEvent: function() {
         var gapUp = 12;
         if (gInputEngine.actions['space'] == true) {
+            this.dialogue = true;
+        }
+        
+        if (this.dialogue == true) {
             //mainPlayer is on the right of the bot
-            if (mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1 || mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 2) {
-                this.direction = 'right';
+            if (mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1) {
                 this.stopMoving();
+                this.direction = 'right';
+                
             }    
             
-            if (mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX || mainPlayer.coordX + gGameEngine.tileSize - 2 == this.coordX) {
-                this.direction = 'left';
+            if (mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX) {
                 this.stopMoving();
+                this.direction = 'left';
+                
             } 
             
-            if (mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY || mainPlayer.coordY + gGameEngine.tileSize - 2 - gapUp == this.coordY) {
-                this.direction = 'up';
+            if (mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY) {
                 this.stopMoving();
+                this.direction = 'up';
+                
             }
             
-            if (mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp || mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 2 - gapUp) {
+            if (mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp) {
+                this.stopMoving();
                 this.direction = 'down';
-                this.stopMoving(); 
             }
-            
+        }    
                 
         
-        }  
+
     },
     
     
