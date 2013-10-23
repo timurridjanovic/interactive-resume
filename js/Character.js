@@ -273,17 +273,13 @@
 
     Node.prototype = {
         neighbors: function(destination) {
-            var neighbors = [];
             var g = this.g + 1;
-            neighbors.push(new Node(this.x + gGameEngine.tileSize, this.y,
-                                    destination, g, this));
-            neighbors.push(new Node(this.x - gGameEngine.tileSize, this.y,
-                                    destination, g, this));
-            neighbors.push(new Node(this.x, this.y + gGameEngine.tileSize,
-                                    destination, g, this));
-            neighbors.push(new Node(this.x, this.y - gGameEngine.tileSize,
-                                    destination, g, this));
-            return neighbors;
+            return [
+                new Node(this.x + gGameEngine.tileSize, this.y, destination, g, this),
+                new Node(this.x - gGameEngine.tileSize, this.y, destination, g, this),
+                new Node(this.x, this.y + gGameEngine.tileSize, destination, g, this),
+                new Node(this.x, this.y - gGameEngine.tileSize, destination, g, this)
+            ];
         },
 
         colliding: function() {
