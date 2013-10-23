@@ -205,28 +205,9 @@
                     var neighbor = neighbor_list[j];
                     //if new node is open
                     if (!neighbor.colliding()) {
-                        //see if the node is already in our closed list.
-                        var found_in_closed = false;
-                        for (var i = 0; i < closed.length; i++) {
-                            if (Node.same(closed[i], neighbor)) {
-                                found_in_closed = true;
-                                break;
-                            }
-                        }
-
-                        if (found_in_closed)
+                        if (contains(closed, neighbor, Node.same)) {
                             continue;
-
-                        //See if the node is in our open list. If not, use it.
-                        var found_in_open = false;
-                        for (var i = 0; i < open.length; i++) {
-                            if (Node.same(open[i], neighbor)) {
-                                found_in_open = true;
-                                break;
-                            }
-                        }
-
-                        if (!found_in_open) {
+                        } else if (!contains(open, neighbor, Node.same)) {
                             open.push(neighbor);
                         }
                     }
@@ -336,5 +317,14 @@
             path.unshift(current_node);
         }
         return path;
+    };
+
+    var contains = function(array, item, same) {
+        for (var i = 0; i < array.length; i++) {
+            if (same(array[i], item)) {
+                return true;
+            }
+        }
+        return false;
     };
 })(this);
