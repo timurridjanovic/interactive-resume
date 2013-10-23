@@ -175,8 +175,8 @@
 
 
         aStarPathFinder: function() {
-            var start = new this.node(this.startingPoint[0], this.startingPoint[1], -1, this.startingPoint, this.destination, 0);
-            var destination = new this.node(this.destination[0], this.destination[1], -1, this.startingPoint, this.destination, 0);
+            var start = new Node(this.startingPoint[0], this.startingPoint[1], -1, this.startingPoint, this.destination, 0);
+            var destination = new Node(this.destination[0], this.destination[1], -1, this.startingPoint, this.destination, 0);
             var columns = gGameEngine.tilesY * gGameEngine.tileSize;
             var rows = gGameEngine.tilesY * gGameEngine.tileSize;
 
@@ -266,8 +266,8 @@
                         }
 
                         if (!found_in_open) {
-                            var new_node = new this.node(new_node_x, new_node_y, closed.length-1,
-                                                         this.startingPoint, this.destination, current_node.g+1);
+                            var new_node = new Node(new_node_x, new_node_y, closed.length-1,
+                                                    this.startingPoint, this.destination, current_node.g+1);
                             open.push(new_node);
                         }
                     }
@@ -320,7 +320,14 @@
             this.directionFlag.right = false;
             this.movingFlag = false;
         }
-
-
     });
+
+    var Node = function(x, y, parent_index, startingPoint, destination, g) {
+	      this.x = x;
+	      this.y = y;
+	      this.parent_index = parent_index;
+	      this.g = g;
+	      this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
+	      this.f = this.g + this.h;
+    };
 })(this);
