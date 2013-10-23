@@ -227,9 +227,7 @@
                         }
 
                         if (!found_in_open) {
-                            var new_node = new Node(new_node_x, new_node_y, closed.length-1,
-                                                    this.startingPoint, this.destination, current_node.g+1);
-                            open.push(new_node);
+                            open.push(neighbor);
                         }
                     }
                 }
