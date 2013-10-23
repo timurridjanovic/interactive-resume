@@ -194,7 +194,7 @@
                 var current_node = open.splice(0, 1)[0];
 
                 //Check if we've reached our destination
-                if (current_node.x == destination.x && current_node.y == destination.y) {
+                if (Node.same(current_node, destination)) {
                     var path = [destination]; //Initialize the path with the destination node
 
                     //Go up the chain to recreate the path
@@ -323,5 +323,9 @@
         nodes.sort(function(a, b) { // does not return because mutates orig array
             return a.f - b.f;
         });
+    };
+
+    Node.same = function(node1, node2) {
+        return node1.x == node2.x && node1.y == node2.y
     };
 })(this);
