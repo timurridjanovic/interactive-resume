@@ -189,10 +189,9 @@
             //Keep going while there's nodes in our open list
             while (open.length > 0) {
                 Node.sortByCost(open);
-                var best_node = 0;
 
-                //Set it as our current node
-                var current_node = open[best_node];
+                // get next node and remove it from open
+                var current_node = open.splice(0, 1)[0];
 
                 //Check if we've reached our destination
                 if (current_node.x == destination.x && current_node.y == destination.y) {
@@ -205,9 +204,6 @@
                     }
                     return path;
                 }
-
-                //Remove the current node from our open list
-                open.splice(best_node, 1);
 
                 //Push it onto the closed list
                 closed.push(current_node);
