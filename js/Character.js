@@ -20,6 +20,10 @@ Character = Class.extend({
     
     characterCoords: {},
     
+    typewriterIndex: 0,
+    
+    textToType: '',
+    
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function(x, y, name, direction, destination) {
@@ -170,6 +174,7 @@ Character = Class.extend({
         //drawing
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
             this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+              
     },
 
 
@@ -294,51 +299,52 @@ Character = Class.extend({
         
         if (this.dialogue) {
             //mainPlayer is on top of the bot       
-            if ((mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY || mainPlayer.coordY + 
-                gGameEngine.tileSize - 2 - gapUp == this.coordY) && mainPlayer.coordX + 
+            if (mainPlayer.coordY + gGameEngine.tileSize - 2 - gapUp <= this.coordY && mainPlayer.coordY + 
+                gGameEngine.tileSize >= this.coordY && mainPlayer.coordX + 
                 (gGameEngine.tileSize/2) >= this.coordX && mainPlayer.coordX + (gGameEngine.tileSize/2) <= 
                 this.coordX + gGameEngine.tileSize) {
                 
-                console.log('up');
                 this.stopMoving();
                 this.direction = 'up';
+                this.dialogueBox = true;
             }
             //mainPlayer is on bottom of bot
-            if ((mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp || mainPlayer.coordY == 
-                this.coordY + gGameEngine.tileSize - 2 - gapUp) && mainPlayer.coordX + 
+            else if (mainPlayer.coordY >= this.coordY + gGameEngine.tileSize - 2 - gapUp && mainPlayer.coordY <= 
+                this.coordY + gGameEngine.tileSize && mainPlayer.coordX + 
                 gGameEngine.tileSize/2 >= this.coordX && mainPlayer.coordX + gGameEngine.tileSize/2 <= 
                 this.coordX + gGameEngine.tileSize) {
                 
-                console.log('down');
                 this.stopMoving();
                 this.direction = 'down';
+                this.dialogueBox = true;
             }
-                    
             //mainPlayer is on the right of the bot
-            if ((mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1 || mainPlayer.coordX == 
+            else if ((mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1 || mainPlayer.coordX == 
                 this.coordX + gGameEngine.tileSize - 2) && mainPlayer.coordY + 
                 gGameEngine.tileSize/2 >= this.coordY && mainPlayer.coordY + gGameEngine.tileSize/2 <= 
                 this.coordY + gGameEngine.tileSize) {
                 
                 this.stopMoving();
                 this.direction = 'right';
+                this.dialogueBox = true;
                 
             }    
             //mainPlayer is on the left of the bot
-            if ((mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX || mainPlayer.coordX + 
+            else if ((mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX || mainPlayer.coordX + 
                 gGameEngine.tileSize - 2 == this.coordX) && mainPlayer.coordY + 
                 gGameEngine.tileSize/2 >= this.coordY && mainPlayer.coordY + gGameEngine.tileSize/2 <= 
                 this.coordY + gGameEngine.tileSize) {
                 
                 this.stopMoving();
                 this.direction = 'left';
+                this.dialogueBox = true;
                 
+            }
+            else {
+                this.dialogueBox = false;
+                this.dialogue = false;
             } 
-            
         }    
-                
-        
-
     },
     
     
@@ -348,6 +354,58 @@ Character = Class.extend({
         this.directionFlag.left = false;
         this.directionFlag.right = false; 
         this.movingFlag = false;  
+    },
+    
+    
+    drawDialogueBox: function() {
+        var minPointX = gGameEngine.canvasWidth/2;
+        var minPointY = gGameEngine.canvasHeight/2;
+        
+        var maxPointX = gGameEngine.tileSize * gGameEngine.tilesX - gGameEngine.canvasWidth/2;
+        var maxPointY = gGameEngine.tileSize * gGameEngine.tilesY - gGameEngine.canvasHeight/2;
+        
+        var translatedX = 10;
+        var translatedY = 250;
+        var width = 780;
+        var height = 140;
+        
+        if (mainPlayer.coordX > minPointX && mainPlayer.coordX < maxPointX) {
+            translatedX = mainPlayer.coordX - gGameEngine.canvasWidth/2 + 10;
+            
+        }
+        
+        if (mainPlayer.coordY > minPointY && mainPlayer.coordY < maxPointY) {
+            translatedY = mainPlayer.coordY + 50;
+        }
+        //drawing dialogue boxes
+        gGameEngine.ctx.fillStyle = '#202020';
+        gGameEngine.ctx.fillRect(translatedX, translatedY, width, height);
+        gGameEngine.ctx.strokeStyle = '#DDDDDD';
+        gGameEngine.ctx.lineWidth = '3';
+        gGameEngine.ctx.strokeRect(translatedX, translatedY, width, height);  
+        
+        this.typewriter(translatedX, translatedY, width, height);
+    },
+    
+    
+    typewriter: function(translatedX, translatedY, width, height) {
+        var maxWidth = 250;
+        var text = 'lorem ipsum dolor et sit amet...';
+        var cursorX = 20;
+        var cursorY = 20;
+        
+        var i = this.typewriterIndex;
+       
+        if (i < text.length) {
+            this.textToType += text[i];
+            this.typewriterIndex++;
+        }
+        
+        gGameEngine.ctx.fillStyle = '#DDDDDD';
+        gGameEngine.ctx.fillText(this.textToType, translatedX + cursorX, translatedY + cursorY);
+            
+        cursorX += 3;
+        
     }
 
 

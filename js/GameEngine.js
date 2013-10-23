@@ -81,6 +81,15 @@ GameEngine = Class.extend({
         	sorted[i]['name'].drawCharacter();
         
         }
+        
+        //drawing dialogue boxes for characters
+        for (var i = 0; i < sorted.length; i++) {
+            if (sorted[i]['name'] != mainPlayer) {
+                if (sorted[i]['name'].dialogueBox == true) {
+                    sorted[i]['name'].drawDialogueBox();                
+                }
+            }
+        }
 
         //restoring context
         this.ctx.restore();
@@ -253,7 +262,8 @@ GameEngine = Class.extend({
     		var tile = collisionTiles[i];
     		var gap = 2;
     		var upGap = 12;
-    		if (tile.bottom > character.characterCoords.top + upGap && tile.top < character.characterCoords.bottom) {
+    		if (tile.bottom > character.characterCoords.top + upGap && tile.top < 
+    		    character.characterCoords.bottom) {
 				if (tile.left < character.characterCoords.right && tile.right > character.characterCoords.left) {
 					//collision up
 					if (character.characterCoords.top + upGap > tile.top && character.direction == 'up') {
