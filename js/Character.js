@@ -188,16 +188,8 @@
 
             //Keep going while there's nodes in our open list
             while (open.length > 0) {
-
-                var best_cost = open[0].f;
+                Node.sortByCost(open);
                 var best_node = 0;
-
-                for (var i = 0; i < open.length; i++) {
-                    if (open[i].f < best_cost) {
-                        best_cost = open[i].f;
-                        best_node = i;
-                    }
-                }
 
                 //Set it as our current node
                 var current_node = open[best_node];
@@ -329,5 +321,11 @@
 	      this.g = g;
 	      this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	      this.f = this.g + this.h;
+    };
+
+    Node.sortByCost = function(nodes) {
+        nodes.sort(function(a, b) { // does not return because mutates orig array
+            return a.f - b.f;
+        });
     };
 })(this);
