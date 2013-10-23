@@ -219,7 +219,7 @@
                         //see if the node is already in our closed list.
                         var found_in_closed = false;
                         for (var i = 0; i < closed.length; i++) {
-                            if (closed[i].x == new_node_x && closed[i].y == new_node_y) {
+                            if (Node.same(closed[i], neighbor)) {
                                 found_in_closed = true;
                                 break;
                             }
@@ -231,7 +231,7 @@
                         //See if the node is in our open list. If not, use it.
                         var found_in_open = false;
                         for (var i = 0; i < open.length; i++) {
-                            if (open[i].x == new_node_x && open[i].y == new_node_y) {
+                            if (Node.same(open[i], neighbor)) {
                                 found_in_open = true;
                                 break;
                             }
