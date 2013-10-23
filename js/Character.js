@@ -190,8 +190,9 @@
             while (open.length > 0) {
                 Node.sortByCost(open);
 
-                // get next node and remove it from open
+                // get next node, remove it from open, put in on closed
                 var current_node = open.splice(0, 1)[0];
+                closed.push(current_node);
 
                 //Check if we've reached our destination
                 if (Node.same(current_node, destination)) {
@@ -204,9 +205,6 @@
                     }
                     return path;
                 }
-
-                //Push it onto the closed list
-                closed.push(current_node);
 
                 //Check to see the best neighbor (in all 4 directions)
                 var neighbor_list = [];
