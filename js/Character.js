@@ -175,9 +175,9 @@
 
 
         aStarPathFinder: function() {
-            var start = new Node(this.startingPoint[0], this.startingPoint[1], -1,
+            var start = new Node(this.startingPoint[0], this.startingPoint[1], undefined,
                                  this.destination, 0);
-            var destination = new Node(this.destination[0], this.destination[1], -1,
+            var destination = new Node(this.destination[0], this.destination[1], undefined,
                                        this.destination, 0);
             var columns = gGameEngine.tilesY * gGameEngine.tileSize;
             var rows = gGameEngine.tilesY * gGameEngine.tileSize;
@@ -198,8 +198,8 @@
 
                 //Check if we've reached our destination
                 if (Node.same(current_node, destination)) {
-                    destination.parent_index = closed.length - 1;
                     return Node.recreatePath(destination, closed);
+                    destination.parent = current_node;
                 }
 
                 var neighbor_list = current_node.neighbors(this.destination, closed.length-1);
@@ -264,26 +264,26 @@
         }
     });
 
-    var Node = function(x, y, parent_index, destination, g) {
+    var Node = function(x, y, parent, destination, g) {
 	      var h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	      this.x = x;
 	      this.y = y;
-	      this.parent_index = parent_index;
+	      this.parent = parent;
 	      this.g = g;
 	      this.f = this.g + h;
     };
 
     Node.prototype = {
-        neighbors: function(destination, parentIndex) {
+        neighbors: function(destination) {
             var neighbors = [];
             var g = this.g + 1;
-            neighbors.push(new Node(this.x + gGameEngine.tileSize, this.y, parentIndex,
+            neighbors.push(new Node(this.x + gGameEngine.tileSize, this.y, this,
                                     destination, g));
-            neighbors.push(new Node(this.x - gGameEngine.tileSize, this.y, parentIndex,
+            neighbors.push(new Node(this.x - gGameEngine.tileSize, this.y, this,
                                     destination, g));
-            neighbors.push(new Node(this.x, this.y + gGameEngine.tileSize, parentIndex,
+            neighbors.push(new Node(this.x, this.y + gGameEngine.tileSize, this,
                                     destination, g));
-            neighbors.push(new Node(this.x, this.y - gGameEngine.tileSize, parentIndex,
+            neighbors.push(new Node(this.x, this.y - gGameEngine.tileSize, this,
                                     destination, g));
             return neighbors;
         },
