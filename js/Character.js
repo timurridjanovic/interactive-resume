@@ -216,7 +216,6 @@
                                                 'left': new_node_x};
                     //if new node is open
                     if (!gGameEngine.intersectRect(gGameEngine.collision, neighbor)
-                        || (destination.x == new_node_x && destination.y == new_node_y)) { //or new node is our destination
 
                         //see if the node is already in our closed list.
                         var found_in_closed = false;
