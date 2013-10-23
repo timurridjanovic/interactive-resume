@@ -175,8 +175,10 @@
 
 
         aStarPathFinder: function() {
-            var start = new Node(this.startingPoint[0], this.startingPoint[1], -1, this.startingPoint, this.destination, 0);
-            var destination = new Node(this.destination[0], this.destination[1], -1, this.startingPoint, this.destination, 0);
+            var start = new Node(this.startingPoint[0], this.startingPoint[1], -1,
+                                 this.destination, 0);
+            var destination = new Node(this.destination[0], this.destination[1], -1,
+                                       this.destination, 0);
             var columns = gGameEngine.tilesY * gGameEngine.tileSize;
             var rows = gGameEngine.tilesY * gGameEngine.tileSize;
 
@@ -262,7 +264,7 @@
         }
     });
 
-    var Node = function(x, y, parent_index, startingPoint, destination, g) {
+    var Node = function(x, y, parent_index, destination, g) {
 	      this.x = x;
 	      this.y = y;
 	      this.parent_index = parent_index;
@@ -276,13 +278,13 @@
             var neighbors = [];
             var g = this.g + 1;
             neighbors.push(new Node(this.x + gGameEngine.tileSize, this.y, parentIndex,
-                                    undefined, destination, g));
+                                    destination, g));
             neighbors.push(new Node(this.x - gGameEngine.tileSize, this.y, parentIndex,
-                                    undefined, destination, g));
+                                    destination, g));
             neighbors.push(new Node(this.x, this.y + gGameEngine.tileSize, parentIndex,
-                                    undefined, destination, g));
+                                    destination, g));
             neighbors.push(new Node(this.x, this.y - gGameEngine.tileSize, parentIndex,
-                                    undefined, destination, g));
+                                    destination, g));
             return neighbors;
         },
 
