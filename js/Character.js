@@ -196,14 +196,8 @@
 
                 //Check if we've reached our destination
                 if (Node.same(current_node, destination)) {
-                    var path = [destination]; //Initialize the path with the destination node
-
-                    //Go up the chain to recreate the path
-                    while (current_node.parent_index != -1) {
-                        current_node = closed[current_node.parent_index];
-                        path.unshift(current_node);
-                    }
-                    return path;
+                    destination.parent_index = closed.length - 1;
+                    return Node.recreatePath(destination, closed);
                 }
 
                 //Check to see the best neighbor (in all 4 directions)
@@ -325,5 +319,16 @@
 
     Node.same = function(node1, node2) {
         return node1.x == node2.x && node1.y == node2.y
+    };
+
+    Node.recreatePath = function(current_node, nodes) {
+        var path = [];
+
+        //Go up the chain to recreate the path
+        while (current_node.parent_index != -1) {
+            current_node = nodes[current_node.parent_index];
+            path.unshift(current_node);
+        }
+        return path;
     };
 })(this);
