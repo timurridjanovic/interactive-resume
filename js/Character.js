@@ -215,8 +215,7 @@
                                                 'right': new_node_x + gGameEngine.tileSize,
                                                 'left': new_node_x};
                     //if new node is open
-                    if (!gGameEngine.intersectRect(gGameEngine.collision, neighbor)
-
+                    if (!neighbor.colliding()) {
                         //see if the node is already in our closed list.
                         var found_in_closed = false;
                         for (var i = 0; i < closed.length; i++) {
