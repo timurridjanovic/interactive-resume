@@ -265,12 +265,12 @@
     });
 
     var Node = function(x, y, parent_index, destination, g) {
+	      var h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	      this.x = x;
 	      this.y = y;
 	      this.parent_index = parent_index;
 	      this.g = g;
-	      this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
-	      this.f = this.g + this.h;
+	      this.f = this.g + h;
     };
 
     Node.prototype = {
