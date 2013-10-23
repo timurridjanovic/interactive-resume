@@ -10,7 +10,7 @@ Player = Class.extend({
     
     direction: 'down',
     
-    coordX: 900,
+    coordX: 700,
     
     coordY: 200,
    	
@@ -48,7 +48,7 @@ Player = Class.extend({
     	    this.characterCollision(false);
     				
     	    //collision detection with collision tiles
-            if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 2)) {
                 this.directionFlag.up = true;
                 this.directionFlag.down = true;
                 this.directionFlag.left = true;
@@ -60,28 +60,28 @@ Player = Class.extend({
         if (gInputEngine.actions['up'] == true) {
             this.direction = 'up';
             if (this.directionFlag.up == true) {
-                this.coordY -= 1;       	
+                this.coordY -= 2;       	
             }        
         }
         
         else if (gInputEngine.actions['down'] == true) {
             this.direction = 'down';
             if (this.directionFlag.down == true) {
-                this.coordY += 1;        	
+                this.coordY += 2;        	
             }                 
         }        
  
         else if (gInputEngine.actions['left'] == true) {
             this.direction = 'left';
             if (this.directionFlag.left == true) {
-                this.coordX -= 1;        	
+                this.coordX -= 2;        	
             }
         }
         
         else if (gInputEngine.actions['right'] == true) {
             this.direction = 'right';   
             if (this.directionFlag.right == true) {     
-                this.coordX += 1;        	
+                this.coordX += 2;        	
             }                   
         }    
         
@@ -109,21 +109,7 @@ Player = Class.extend({
         for (var i = 0; i < gGameEngine.allCharacters.length; i++) {
             var name = gGameEngine.allCharacters[i];
             var character = gGameEngine.characterCollisions[name];
-            if (check) {
-                if (gGameEngine.intersectRect([character], this)) {
-                    return true;
-                }
-                else {
-                    this.directionFlag.up = true;
-                    this.directionFlag.down = true;
-                    this.directionFlag.left = true;
-                    this.directionFlag.right = true;
-                    return false;
-                }
-            }
-            else {
-                gGameEngine.collisionHandler([character], this);
-            }
+            gGameEngine.collisionHandler([character], this, 2);
         }
     }
     

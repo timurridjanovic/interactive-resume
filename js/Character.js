@@ -72,7 +72,7 @@ Character = Class.extend({
         else {
             //collision with mainPlayer
             if (this.movingFlag == true) { //collision detection with player happens only if bot is moving
-                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this)) {
+                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this, 1)) {
                     this.directionFlag.up = true;
                     this.directionFlag.down = true;
                     this.directionFlag.left = true;
@@ -83,7 +83,7 @@ Character = Class.extend({
             
 
             //collision with collision tiles
-            if (!gGameEngine.collisionHandler(gGameEngine.collision, this)) {
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 1)) {
                 this.directionFlag.up = true;
                 this.directionFlag.down = true;
                 this.directionFlag.left = true;
@@ -292,30 +292,49 @@ Character = Class.extend({
             this.dialogue = true;
         }
         
-        if (this.dialogue == true) {
+        if (this.dialogue) {
+            //mainPlayer is on top of the bot       
+            if ((mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY || mainPlayer.coordY + 
+                gGameEngine.tileSize - 2 - gapUp == this.coordY) && mainPlayer.coordX + 
+                (gGameEngine.tileSize/2) >= this.coordX && mainPlayer.coordX + (gGameEngine.tileSize/2) <= 
+                this.coordX + gGameEngine.tileSize) {
+                
+                console.log('up');
+                this.stopMoving();
+                this.direction = 'up';
+            }
+            //mainPlayer is on bottom of bot
+            if ((mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp || mainPlayer.coordY == 
+                this.coordY + gGameEngine.tileSize - 2 - gapUp) && mainPlayer.coordX + 
+                gGameEngine.tileSize/2 >= this.coordX && mainPlayer.coordX + gGameEngine.tileSize/2 <= 
+                this.coordX + gGameEngine.tileSize) {
+                
+                console.log('down');
+                this.stopMoving();
+                this.direction = 'down';
+            }
+                    
             //mainPlayer is on the right of the bot
-            if (mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1) {
+            if ((mainPlayer.coordX == this.coordX + gGameEngine.tileSize - 1 || mainPlayer.coordX == 
+                this.coordX + gGameEngine.tileSize - 2) && mainPlayer.coordY + 
+                gGameEngine.tileSize/2 >= this.coordY && mainPlayer.coordY + gGameEngine.tileSize/2 <= 
+                this.coordY + gGameEngine.tileSize) {
+                
                 this.stopMoving();
                 this.direction = 'right';
                 
             }    
-            
-            if (mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX) {
+            //mainPlayer is on the left of the bot
+            if ((mainPlayer.coordX + gGameEngine.tileSize - 1 == this.coordX || mainPlayer.coordX + 
+                gGameEngine.tileSize - 2 == this.coordX) && mainPlayer.coordY + 
+                gGameEngine.tileSize/2 >= this.coordY && mainPlayer.coordY + gGameEngine.tileSize/2 <= 
+                this.coordY + gGameEngine.tileSize) {
+                
                 this.stopMoving();
                 this.direction = 'left';
                 
             } 
             
-            if (mainPlayer.coordY + gGameEngine.tileSize - 1 - gapUp == this.coordY) {
-                this.stopMoving();
-                this.direction = 'up';
-                
-            }
-            
-            if (mainPlayer.coordY == this.coordY + gGameEngine.tileSize - 1 - gapUp) {
-                this.stopMoving();
-                this.direction = 'down';
-            }
         }    
                 
         

@@ -247,7 +247,7 @@ GameEngine = Class.extend({
     },
     
     
-    collisionHandler: function(collisionTiles, character) {
+    collisionHandler: function(collisionTiles, character, increment) {
     	character.movingFlag = false;
     	for (var i = 0; i < collisionTiles.length; i++) {
     		var tile = collisionTiles[i];
@@ -261,7 +261,7 @@ GameEngine = Class.extend({
 						character.directionFlag.down = true;
 						character.directionFlag.right = true;
 						character.directionFlag.left = true;
-						character.coordY++;
+						character.coordY += increment;
 					}
 					//collision down
 					if (character.characterCoords.bottom < tile.bottom && character.direction == 'down') {
@@ -269,7 +269,7 @@ GameEngine = Class.extend({
 						character.directionFlag.up = true;
 						character.directionFlag.right = true;
 						character.directionFlag.left = true;
-						character.coordY--;
+						character.coordY -= increment;
 					}
 					//collision right
 					if (character.characterCoords.right < tile.right + gap && character.direction == 'right') {
@@ -277,7 +277,7 @@ GameEngine = Class.extend({
 						character.directionFlag.up = true;
 						character.directionFlag.down = true;
 						character.directionFlag.left = true;
-						character.coordX--;
+						character.coordX -= increment;
 					}
 					//collision left
 					if (character.characterCoords.left > tile.left && character.direction == 'left') {
@@ -285,7 +285,7 @@ GameEngine = Class.extend({
 						character.directionFlag.right = true;
 						character.directionFlag.up = true;
 						character.directionFlag.down = true;
-						character.coordX++;
+						character.coordX += increment;
 					}
 				}
 			}		
