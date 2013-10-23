@@ -313,6 +313,17 @@
             neighbors.push([this.x, this.y + gGameEngine.tileSize]);
             neighbors.push([this.x, this.y - gGameEngine.tileSize]);
             return neighbors;
+        },
+
+        colliding: function() {
+            this.characterCoords = {
+                'top': this.y,
+                'bottom': this.y + gGameEngine.tileSize,
+                'right': this.x + gGameEngine.tileSize,
+                'left': this.x
+            };
+
+            return gGameEngine.intersectRect(gGameEngine.collision, this);
         }
     };
 
