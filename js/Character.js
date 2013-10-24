@@ -20,7 +20,13 @@ Character = Class.extend({
     
     characterCoords: {},
     
-    typewriterIndex: 0,
+    lines: [],
+    
+    typewriterLetterIndex: 0,
+    
+    typewriterLineIndex: 1,
+    
+    indexesPerLines: [],
     
     textToType: '',
     
@@ -51,6 +57,10 @@ Character = Class.extend({
         this.path = [];
         this.pathIndex = 0;
         this.pathSet = false;
+        
+        //load text for dialogue
+        this.dialogueText = null;
+        this.loadDialogueText();
     
     },
     
@@ -377,6 +387,14 @@ Character = Class.extend({
         if (mainPlayer.coordY > minPointY && mainPlayer.coordY < maxPointY) {
             translatedY = mainPlayer.coordY + 50;
         }
+        
+        if (mainPlayer.coordX >= maxPointX) {
+            translatedX = maxPointX - gGameEngine.canvasWidth/2 + 10;
+        }
+        
+        if (mainPlayer.coordY >= maxPointY) {
+            translatedY = maxPointY - gGameEngine.canvasHeight/2 + 250;
+        }
         //drawing dialogue boxes
         gGameEngine.ctx.fillStyle = '#202020';
         gGameEngine.ctx.fillRect(translatedX, translatedY, width, height);
@@ -389,23 +407,90 @@ Character = Class.extend({
     
     
     typewriter: function(translatedX, translatedY, width, height) {
-        var maxWidth = 250;
-        var text = 'lorem ipsum dolor et sit amet...';
-        var cursorX = 20;
-        var cursorY = 20;
+        var maxWidth = 360;
+        var maxLines = 5;
+        var text = this.dialogueText['text'];
+        var cursorX = 10;
+        var lineHeight = 25;
+        var words = text.split(' ');
         
-        var i = this.typewriterIndex;
-       
-        if (i < text.length) {
-            this.textToType += text[i];
-            this.typewriterIndex++;
+        var separationIndex = 0;
+        
+        //only create lines if they haven't been created yet
+        if (this.lines.length <= 0) {
+            for (var i = 0; i <= words.length; i++) {
+                if (gGameEngine.ctx.measureText(words.slice(separationIndex, i).join(' ')).width >= maxWidth || (words[i] == 'YOU:' && this.lines.length >= 1)) {
+                    this.lines.push(words.slice(separationIndex, i).join(' '));
+                    separationIndex = i;
+                }
+                
+                if (words.slice(separationIndex, i).join(' ') == words.slice(separationIndex).join(' ')) {
+                    this.lines.push(words.slice(separationIndex, i).join(' '));
+                }
+            }
         }
         
-        gGameEngine.ctx.fillStyle = '#DDDDDD';
-        gGameEngine.ctx.fillText(this.textToType, translatedX + cursorX, translatedY + cursorY);
-            
-        cursorX += 3;
+
+        var i = this.typewriterLetterIndex;
+        var j = this.typewriterLineIndex;
         
+        if (j > maxLines) {
+            if (gInputEngine.actions['space'] == true) {
+                this.lines = this.lines.slice(maxLines);
+                this.indexesPerLines = [];
+                this.typewriterLineIndex = 1;
+                j = this.typewriterLineIndex;            
+            }
+        }
+        
+        else {
+            
+            
+            if (i < this.lines[j-1].length) {
+                this.typewriterLetterIndex++;
+            }
+            else {
+                if (j < this.lines.length && j <= maxLines) {
+                    this.typewriterLineIndex++;
+                    this.indexesPerLines.push(i);
+                    this.typewriterLetterIndex = 0;
+                }    
+            }
+        }
+            
+        gGameEngine.ctx.fillStyle = '#DDDDDD';
+        gGameEngine.ctx.font = '20px sans-serif';
+        
+        
+        
+        for (var x = 0; x < j - 1; x++) {
+            gGameEngine.ctx.fillText(this.lines.slice(x, j).join().slice(0, this.indexesPerLines[x]), 
+                translatedX + cursorX, translatedY + lineHeight*(x+1));
+        }
+        
+        if (x == j - 1) {
+            gGameEngine.ctx.fillText(this.lines.slice(x, j).join().slice(0, i), translatedX + 
+                cursorX, translatedY + lineHeight*(x+1));        
+        }
+            
+        
+    },
+    
+    
+    loadDialogueText: function() {
+        var xhr = new XMLHttpRequest(); 
+		
+	    // Loading of file
+	    xhr.open("GET", 'text/' + this.imgName + '.json', false);
+	    xhr.send(null);
+	    if(xhr.readyState != 4 || (xhr.status != 200 && xhr.status != 0)) // Code == 0 for local
+		    throw new Error("Impossible to load text:" + " (code HTTP : " + xhr.status + ").");
+	    
+	    var textData = xhr.responseText;
+	
+	    // parsing JSON map and storing it into mapData
+	    this.dialogueText = JSON.parse(textData);
+    
     }
 
 

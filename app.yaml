@@ -16,6 +16,9 @@ handlers:
  
 - url: /map
   static_dir: map
+  
+- url: /text
+  static_dir: text
 
 - url: /components
   static_dir: components

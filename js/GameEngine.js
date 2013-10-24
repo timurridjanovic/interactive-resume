@@ -54,7 +54,7 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
-        characterOne = new Character(700, 150, 'character_one', 'up', [750, 300]);
+        characterOne = new Character(700, 100, 'character_one', 'up', [750, 300]);
         characterTwo = new Character(850, 200, 'character_two', 'down', [700, 200]);
         
         this.gameLoop();
