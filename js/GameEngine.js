@@ -76,20 +76,23 @@ GameEngine = Class.extend({
         
         //drawing player and character sorted by Y axis
         var sorted = this.sortByYAxis();
+        
         //loop drawing characters by sorted Y axis
         for (var i = 0; i < sorted.length; i++) {
         	sorted[i]['name'].drawCharacter();
-        
         }
         
         //drawing dialogue boxes for characters
         for (var i = 0; i < sorted.length; i++) {
-            if (sorted[i]['name'] != mainPlayer) {
+            if (sorted[i]['name'] != mainPlayer) { 
                 if (sorted[i]['name'].dialogueBox == true) {
                     sorted[i]['name'].drawDialogueBox();                
                 }
-            }
+            }          
         }
+        
+        //drawing minimap
+        this.miniMap();
 
         //restoring context
         this.ctx.restore();
@@ -329,6 +332,96 @@ GameEngine = Class.extend({
     	});
     	
     	return this.sorted;
+    },
+    
+    miniMap: function() {
+        var canvas = document.getElementById('canvasMiniMap');
+        var canvasWidth = canvas.width;
+        var canvasHeight = canvas.height;
+        var ctx = canvas.getContext('2d');
+        
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.fillStyle = 'rgba(225, 225, 225, 0.6)';
+        ctx.fillRect(0, 0, 100, 100);
+        
+        
+        var sorted = this.sorted;
+        for (var i = 0; i < sorted.length; i++) {
+            if (sorted[i]['name'] == mainPlayer) {
+                var mainPlayerCoordX = sorted[i]['name'].coordX/1600 * 100;
+                var mainPlayerCoordY = sorted[i]['name'].coordY/1600 * 100;
+                ctx.fillStyle = 'red';
+                ctx.fillRect(mainPlayerCoordX, mainPlayerCoordY, 5, 5);
+            }
+            else {
+                var characterCoordX = sorted[i]['name'].coordX/1600 * 100;
+                var characterCoordY = sorted[i]['name'].coordY/1600 * 100;
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(characterCoordX, characterCoordY, 5, 5);
+            }
+        }
+        
+        //INTERESTING PROBLEM TO SHOWCASE WHEN I DONT HAVE ANOTHER CANVAS FOR THE MINIMAP... IT CAUSES A DELAY IN THE ANIMATION... NOT SURE WHY THAT IS...
+        /*
+        var translatedContext = gGameEngine.translatedContext(gGameEngine.canvasWidth-101, 0);
+        var translatedX = translatedContext[0];
+        var translatedY = translatedContext[1];
+        
+        gGameEngine.ctx.fillStyle = 'rgba(225, 225, 225, 0.6)';
+        gGameEngine.ctx.strokeStyle = 'black';
+        gGameEngine.ctx.fillRect(translatedX, translatedY, 100, 100);
+        gGameEngine.ctx.strokeRect(translatedX, translatedY, 101, 101);
+        
+        var sorted = this.sorted;
+        for (var i = 0; i < sorted.length; i++) {
+            if (sorted[i]['name'] == mainPlayer) {
+                var mainPlayerCoordX = sorted[i]['name'].coordX/1600 * 100;
+                var mainPlayerCoordY = sorted[i]['name'].coordY/1600 * 100;
+                gGameEngine.ctx.fillStyle = 'red';
+                gGameEngine.ctx.fillRect(translatedX + mainPlayerCoordX, translatedY + mainPlayerCoordY, 5, 5);
+            }
+            else {
+                var characterCoordX = sorted[i]['name'].coordX/1600 * 100;
+                var characterCoordY = sorted[i]['name'].coordY/1600 * 100;
+                gGameEngine.ctx.fillStyle = 'blue';
+                gGameEngine.ctx.fillRect(translatedX + characterCoordX, translatedY + characterCoordY, 5, 5);
+            }
+            
+        }*/
+    
+    },
+    
+    translatedContext: function(offsetX, offsetY) {
+        var minPointX = gGameEngine.canvasWidth/2;
+        var minPointY = gGameEngine.canvasHeight/2;
+        
+        var maxPointX = gGameEngine.tileSize * gGameEngine.tilesX - gGameEngine.canvasWidth/2;
+        var maxPointY = gGameEngine.tileSize * gGameEngine.tilesY - gGameEngine.canvasHeight/2;
+        
+        var translatedX = offsetX;
+        var translatedY = offsetY;
+        var width = 780;
+        var height = 140;
+        
+        if (mainPlayer.coordX > minPointX && mainPlayer.coordX < maxPointX) {
+            translatedX = mainPlayer.coordX - gGameEngine.canvasWidth/2 + offsetX;
+            
+        }
+        
+        if (mainPlayer.coordY > minPointY && mainPlayer.coordY < maxPointY) {
+            translatedY = mainPlayer.coordY - gGameEngine.canvasHeight/2 + offsetY;
+        }
+        
+        if (mainPlayer.coordX >= maxPointX) {
+            translatedX = maxPointX - gGameEngine.canvasWidth/2 + offsetX;
+        }
+        
+        if (mainPlayer.coordY >= maxPointY) {
+            translatedY = maxPointY - gGameEngine.canvasHeight/2 + offsetY;
+        }
+        
+        return [translatedX, translatedY];
+    
     }  
     
 });

@@ -2,6 +2,11 @@ canvas {
 	border: 1px solid black;
 }
 
+#canvasMiniMap {
+    position: relative;
+    margin-left: -102px; /*the 2 pixels are for the borders*/
+}
+
 .container {
 	margin: 0 auto;
 	

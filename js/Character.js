@@ -368,33 +368,13 @@ Character = Class.extend({
     
     
     drawDialogueBox: function() {
-        var minPointX = gGameEngine.canvasWidth/2;
-        var minPointY = gGameEngine.canvasHeight/2;
+        var translatedContext = gGameEngine.translatedContext(10, 250);
+        var translatedX = translatedContext[0];
+        var translatedY = translatedContext[1];
         
-        var maxPointX = gGameEngine.tileSize * gGameEngine.tilesX - gGameEngine.canvasWidth/2;
-        var maxPointY = gGameEngine.tileSize * gGameEngine.tilesY - gGameEngine.canvasHeight/2;
-        
-        var translatedX = 10;
-        var translatedY = 250;
         var width = 780;
         var height = 140;
         
-        if (mainPlayer.coordX > minPointX && mainPlayer.coordX < maxPointX) {
-            translatedX = mainPlayer.coordX - gGameEngine.canvasWidth/2 + 10;
-            
-        }
-        
-        if (mainPlayer.coordY > minPointY && mainPlayer.coordY < maxPointY) {
-            translatedY = mainPlayer.coordY + 50;
-        }
-        
-        if (mainPlayer.coordX >= maxPointX) {
-            translatedX = maxPointX - gGameEngine.canvasWidth/2 + 10;
-        }
-        
-        if (mainPlayer.coordY >= maxPointY) {
-            translatedY = maxPointY - gGameEngine.canvasHeight/2 + 250;
-        }
         //drawing dialogue boxes
         gGameEngine.ctx.fillStyle = '#202020';
         gGameEngine.ctx.fillRect(translatedX, translatedY, width, height);
@@ -407,7 +387,7 @@ Character = Class.extend({
     
     
     typewriter: function(translatedX, translatedY, width, height) {
-        var maxWidth = 360;
+        var maxWidth = 320;
         var maxLines = 5;
         var text = this.dialogueText['text'];
         var cursorX = 10;
@@ -415,17 +395,24 @@ Character = Class.extend({
         var words = text.split(' ');
         
         var separationIndex = 0;
+        var found_first_you = false;
         
         //only create lines if they haven't been created yet
         if (this.lines.length <= 0) {
             for (var i = 0; i <= words.length; i++) {
-                if (gGameEngine.ctx.measureText(words.slice(separationIndex, i).join(' ')).width >= maxWidth || (words[i] == 'YOU:' && this.lines.length >= 1)) {
+                if (gGameEngine.ctx.measureText(words.slice(separationIndex, i).join(' ')).width >= 
+                    maxWidth || (words[i] == 'YOU:' && found_first_you)) {
+                    
                     this.lines.push(words.slice(separationIndex, i).join(' '));
                     separationIndex = i;
                 }
                 
                 if (words.slice(separationIndex, i).join(' ') == words.slice(separationIndex).join(' ')) {
                     this.lines.push(words.slice(separationIndex, i).join(' '));
+                }
+                
+                if (words[i] == 'YOU:') {
+                    found_first_you = true;
                 }
             }
         }
@@ -451,9 +438,18 @@ Character = Class.extend({
             }
             else {
                 if (j < this.lines.length && j <= maxLines) {
-                    this.typewriterLineIndex++;
-                    this.indexesPerLines.push(i);
-                    this.typewriterLetterIndex = 0;
+                    if (this.lines[j].slice(0, 3) == 'YOU') {
+                        if (gInputEngine.actions['space'] == true) {
+                            this.typewriterLineIndex++;
+                            this.indexesPerLines.push(i);
+                            this.typewriterLetterIndex = 0;                        
+                        }
+                    }
+                    else {
+                        this.typewriterLineIndex++;
+                        this.indexesPerLines.push(i);
+                        this.typewriterLetterIndex = 0;
+                    }
                 }    
             }
         }
@@ -472,8 +468,6 @@ Character = Class.extend({
             gGameEngine.ctx.fillText(this.lines.slice(x, j).join().slice(0, i), translatedX + 
                 cursorX, translatedY + lineHeight*(x+1));        
         }
-            
-        
     },
     
     
