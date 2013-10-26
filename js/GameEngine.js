@@ -27,6 +27,8 @@ GameEngine = Class.extend({
     
     collision: [],
     
+    menu: true,
+    
     loadManifest: [ {name: "mainPlayer", src: "img/mainPlayer.png"},
                     {name: "tile_carpet", src: "img/tile_carpet.png"},
                     {name: "tile_wall", src: "img/tile_wall.png"},
@@ -57,50 +59,89 @@ GameEngine = Class.extend({
         characterOne = new Character(700, 100, 'character_one', 'up', [750, 300]);
         characterTwo = new Character(850, 200, 'character_two', 'down', [700, 200]);
         
-        this.gameLoop();
         
-            
+        gInputEngine.addListener('enter', this.exitMenu.bind(this));  
+        this.gameLoop();
 
     },
     
+    
+    startMenu: function() {
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+        
+        this.ctx.fillStyle = '#66FF00';
+        this.ctx.font = '40px sans-serif';
+        this.ctx.fillText("Press Enter to Play", this.canvasWidth/4+10, this.canvasHeight/2 - 10);
+    },
+    
+    
+    exitMenu: function() {
+        this.menu = false;
+        gInputEngine.removeListeners();
+        
+        mainSoundTrack = new SoundManager();
+     
+        //var volume = 1.0;
+        mainSoundTrack.loadAsync('music/honeybee.mp3', 
+            function (sObj) {mainSoundTrack.playSound(sObj.path, {looping:true});});
+        
+        gInputEngine.addListener('backspace', this.soundToggle);
+        gInputEngine.addListener('F1', this.restart.bind(this));
+        gGameEngine.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
+        
+    },
+    
+    restart: function() {
+        window.location.reload()
+    },
+    
     gameLoop: function() {   
-        //clearing context
-        this.ctx.clearRect(0, 0, 30, 30); 
+        //clearing contexts
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
          
-        //translate context
-        this.ctx.save();
-        this.translateContext();
-       
-        //drawing tiles        
-        this.drawTiles();
         
-        //drawing player and character sorted by Y axis
-        var sorted = this.sortByYAxis();
-        
-        //loop drawing characters by sorted Y axis
-        for (var i = 0; i < sorted.length; i++) {
-        	sorted[i]['name'].drawCharacter();
+        if (this.menu === true) {
+            this.drawTiles()
+            this.startMenu();  
         }
-        
-        //drawing dialogue boxes for characters
-        for (var i = 0; i < sorted.length; i++) {
-            if (sorted[i]['name'] != mainPlayer) { 
-                if (sorted[i]['name'].dialogueBox == true) {
-                    sorted[i]['name'].drawDialogueBox();                
-                }
-            }          
-        }
-        
-        //drawing minimap
-        this.miniMap();
-
-        //restoring context
-        this.ctx.restore();
-        
-        //calculating frames per second
-        this.framesPerSecond();
+        else {
+            //translate context
+            this.ctx.save();
+            this.translateContext();
        
-        requestAnimationFrame(this.gameLoop.bind(this));
+            //drawing tiles        
+            this.drawTiles();
+            
+            //drawing player and character sorted by Y axis
+            var sorted = this.sortByYAxis();
+            
+            //loop drawing characters by sorted Y axis
+            for (var i = 0; i < sorted.length; i++) {
+            	sorted[i]['name'].drawCharacter();
+            }
+            
+            //drawing dialogue boxes for characters
+            for (var i = 0; i < sorted.length; i++) {
+                if (sorted[i]['name'] != mainPlayer) {
+                    if (sorted[i]['name'].dialogueBox == true) {
+                        sorted[i]['name'].drawDialogueBox();                
+                    }
+                    else {this.typeWriterOn = false;}
+                }          
+            }
+           
+            
+            //restoring context
+            this.ctx.restore();
+            
+            //calculating frames per second
+            this.framesPerSecond();
+            
+            //drawing minimap
+            this.miniMap();
+        }
+        this.requestID = requestAnimationFrame(this.gameLoop.bind(this));
     },
     
     
@@ -133,13 +174,13 @@ GameEngine = Class.extend({
     
     },
     
-    preloadImages: function() {
+    preloadImages: function() {       
         var that = this;
         var loadedImages = 0;
         for (var i = 0; i < this.loadManifest.length; i++) {
             this.images[i] = new Image();
             this.images[i].onload = function() {
-                loadedImages++; //++ before?
+                loadedImages++; 
                 that.progressBar(loadedImages);
                 
             }
@@ -170,16 +211,21 @@ GameEngine = Class.extend({
             this.fps = Math.round(1000/result);
             this.timeAverage = [];
         }    
+        this.ctx.font = '10px sans-serif';
         this.ctx.fillStyle = 'white';
         this.ctx.fillText(this.fps, 0, 10);
     },
     
     progressBar: function(i) {
+        
         var percentIndex = this.progressBarPercent;
         this.progressBarPercent = Math.floor((i/this.loadManifest.length)*100);
         var percentToComplete = this.progressBarPercent;
         
         for (percentIndex; percentIndex <= this.progressBarPercent; percentIndex++) {
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+            
             this.ctx.fillStyle = 'green';
             this.ctx.strokeRect(1, this.canvasHeight/2-25, this.canvasWidth-2, 50);
             this.ctx.fillRect(2, this.canvasHeight/2-25+1, this.canvasWidth*(percentIndex/100)-3, 50-2);
@@ -247,8 +293,9 @@ GameEngine = Class.extend({
                             this.collision.push(tileCoords);
                           
                         }
-                        
+                        this.ctx.beginPath();
                         this.ctx.drawImage(image, MapX, MapY);
+                        this.ctx.closePath();
                         
                         
                     }
@@ -335,42 +382,11 @@ GameEngine = Class.extend({
     },
     
     miniMap: function() {
-        var canvas = document.getElementById('canvasMiniMap');
-        var canvasWidth = canvas.width;
-        var canvasHeight = canvas.height;
-        var ctx = canvas.getContext('2d');
-        
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fillStyle = 'rgba(225, 225, 225, 0.6)';
-        ctx.fillRect(0, 0, 100, 100);
-        
-        
-        var sorted = this.sorted;
-        for (var i = 0; i < sorted.length; i++) {
-            if (sorted[i]['name'] == mainPlayer) {
-                var mainPlayerCoordX = sorted[i]['name'].coordX/1600 * 100;
-                var mainPlayerCoordY = sorted[i]['name'].coordY/1600 * 100;
-                ctx.fillStyle = 'red';
-                ctx.fillRect(mainPlayerCoordX, mainPlayerCoordY, 5, 5);
-            }
-            else {
-                var characterCoordX = sorted[i]['name'].coordX/1600 * 100;
-                var characterCoordY = sorted[i]['name'].coordY/1600 * 100;
-                ctx.fillStyle = 'blue';
-                ctx.fillRect(characterCoordX, characterCoordY, 5, 5);
-            }
-        }
-        
-        //INTERESTING PROBLEM TO SHOWCASE WHEN I DONT HAVE ANOTHER CANVAS FOR THE MINIMAP... IT CAUSES A DELAY IN THE ANIMATION... NOT SURE WHY THAT IS...
-        /*
-        var translatedContext = gGameEngine.translatedContext(gGameEngine.canvasWidth-101, 0);
-        var translatedX = translatedContext[0];
-        var translatedY = translatedContext[1];
-        
+        gGameEngine.ctx.beginPath();
         gGameEngine.ctx.fillStyle = 'rgba(225, 225, 225, 0.6)';
-        gGameEngine.ctx.strokeStyle = 'black';
-        gGameEngine.ctx.fillRect(translatedX, translatedY, 100, 100);
-        gGameEngine.ctx.strokeRect(translatedX, translatedY, 101, 101);
+        gGameEngine.ctx.fillRect(gGameEngine.canvasWidth-100, 0, 100, 100);
+
+        
         
         var sorted = this.sorted;
         for (var i = 0; i < sorted.length; i++) {
@@ -378,17 +394,19 @@ GameEngine = Class.extend({
                 var mainPlayerCoordX = sorted[i]['name'].coordX/1600 * 100;
                 var mainPlayerCoordY = sorted[i]['name'].coordY/1600 * 100;
                 gGameEngine.ctx.fillStyle = 'red';
-                gGameEngine.ctx.fillRect(translatedX + mainPlayerCoordX, translatedY + mainPlayerCoordY, 5, 5);
+                gGameEngine.ctx.fillRect(mainPlayerCoordX + gGameEngine.canvasWidth-100, mainPlayerCoordY, 5, 5);
             }
             else {
                 var characterCoordX = sorted[i]['name'].coordX/1600 * 100;
                 var characterCoordY = sorted[i]['name'].coordY/1600 * 100;
                 gGameEngine.ctx.fillStyle = 'blue';
-                gGameEngine.ctx.fillRect(translatedX + characterCoordX, translatedY + characterCoordY, 5, 5);
+                gGameEngine.ctx.fillRect(characterCoordX + gGameEngine.canvasWidth-100, characterCoordY, 5, 5);
             }
             
-        }*/
-    
+        }
+        
+        gGameEngine.ctx.strokeStyle = 'black';
+        gGameEngine.ctx.strokeRect(gGameEngine.canvasWidth-101, 0, 101, 101);
     },
     
     translatedContext: function(offsetX, offsetY) {
@@ -422,7 +440,13 @@ GameEngine = Class.extend({
         
         return [translatedX, translatedY];
     
-    }  
+    },
+    
+    
+    soundToggle: function() {
+        mainSoundTrack.togglemute();
+    }
+    
     
 });
 

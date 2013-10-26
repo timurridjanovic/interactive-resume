@@ -182,9 +182,12 @@ Character = Class.extend({
             }
         }
         //drawing
+        gGameEngine.ctx.beginPath();
+        
         gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
             this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
-              
+          
+        gGameEngine.ctx.closePath();      
     },
 
 
@@ -376,11 +379,13 @@ Character = Class.extend({
         var height = 140;
         
         //drawing dialogue boxes
+        gGameEngine.ctx.beginPath();
         gGameEngine.ctx.fillStyle = '#202020';
         gGameEngine.ctx.fillRect(translatedX, translatedY, width, height);
         gGameEngine.ctx.strokeStyle = '#DDDDDD';
         gGameEngine.ctx.lineWidth = '3';
-        gGameEngine.ctx.strokeRect(translatedX, translatedY, width, height);  
+        gGameEngine.ctx.strokeRect(translatedX, translatedY, width, height); 
+        gGameEngine.ctx.closePath();  
         
         this.typewriter(translatedX, translatedY, width, height);
     },
@@ -466,7 +471,7 @@ Character = Class.extend({
         
         if (x == j - 1) {
             gGameEngine.ctx.fillText(this.lines.slice(x, j).join().slice(0, i), translatedX + 
-                cursorX, translatedY + lineHeight*(x+1));        
+                cursorX, translatedY + lineHeight*(x+1));
         }
     },
     

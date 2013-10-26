@@ -19,6 +19,9 @@ handlers:
   
 - url: /text
   static_dir: text
+  
+- url: /music
+  static_dir: music
 
 - url: /components
   static_dir: components

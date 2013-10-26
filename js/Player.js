@@ -96,11 +96,13 @@ Player = Class.extend({
             }        
         }
 
-       
+        gGameEngine.ctx.beginPath();
+        
         gGameEngine.ctx.drawImage(gGameEngine.mainPlayerImg, 
             this.frameX[this.currentFrame], this.frameY[this.direction], 32, 32, 
                 this.coordX, this.coordY, 32, 32);
         
+        gGameEngine.ctx.closePath(); 
        
     },
     
