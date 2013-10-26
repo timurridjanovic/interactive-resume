@@ -27,6 +27,8 @@ GameEngine = Class.extend({
     
     collision: [],
     
+    talkedToAlice: false,
+    
     menu: true,
     
     loadManifest: [ {name: "mainPlayer", src: "img/mainPlayer.png"},
@@ -60,7 +62,7 @@ GameEngine = Class.extend({
         gInputEngine.setup();
         mainPlayer = new Player();
         characterOne = new Character(576, 224, 'character_one', 'up', [704, 64]);
-        characterTwo = new Character(850, 200, 'character_two', 'down', [700, 200]);
+        characterTwo = new Character(850, 200, 'character_two', 'down', [608, 288]);
         characterThree = new Character(192, 148, 'character_three', 'up', [192, 148]);
         characterFour = new Character(320, 148, 'character_four', 'up', [320, 148]);
         characterFive = new Character(414, 244, 'character_five', 'up', [414, 244]);
@@ -134,7 +136,6 @@ GameEngine = Class.extend({
                     if (sorted[i]['name'].dialogueBox == true) {
                         sorted[i]['name'].drawDialogueBox();                
                     }
-                    else {this.typeWriterOn = false;}
                 }          
             }
            

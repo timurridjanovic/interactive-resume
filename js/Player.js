@@ -10,9 +10,9 @@ Player = Class.extend({
     
     direction: 'down',
     
-    coordX: 1370,
+    coordX: 50,
     
-    coordY: 1300,
+    coordY: 100,
    	
     characterCoords: {},
     

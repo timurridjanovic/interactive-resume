@@ -30,6 +30,8 @@ Character = Class.extend({
     
     textToType: '',
     
+    endOfText: false,
+    
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function(x, y, name, direction, destination) {
@@ -384,6 +386,7 @@ Character = Class.extend({
     
     
     drawDialogueBox: function() {
+        this.dialogueEngaged = true;
         var translatedContext = gGameEngine.translatedContext(10, 250);
         var translatedX = translatedContext[0];
         var translatedY = translatedContext[1];
@@ -405,9 +408,23 @@ Character = Class.extend({
     
     
     typewriter: function(translatedX, translatedY, width, height) {
+        if (this.endOfText == true) {
+            this.lines = [];
+        }
+    
         var maxWidth = 320;
         var maxLines = 5;
-        var text = this.dialogueText['text'];
+        var text = '';
+        //check to see if mainPlayer talked to the right people...
+        if (this.imgName == "character_three" || gGameEngine.talkedToAlice == true) { //character_three is Alice
+            text = this.dialogueText['text'];
+            gGameEngine.talkedToAlice = true;
+            
+        }
+        else {
+            text = this.dialogueText['notMyTurn'];
+        }
+        
         var cursorX = 10;
         var lineHeight = 25;
         var words = text.split(' ');
@@ -415,23 +432,25 @@ Character = Class.extend({
         var separationIndex = 0;
         var found_first_you = false;
         
+        this.test = words;
         //only create lines if they haven't been created yet
         if (this.lines.length <= 0) {
-            for (var i = 0; i <= words.length; i++) {
+            for (var i = 0; i < words.length; i++) {
                 if (gGameEngine.ctx.measureText(words.slice(separationIndex, i).join(' ')).width >= 
-                    maxWidth || (words[i] == 'YOU:' && found_first_you)) {
+                    maxWidth || (words[i] == words[i].match(/[A-Z-:]*/g).join('') && words[i].match(/[A-Z-:]*/g).join('').length > 3 && found_first_you)) {
                     
                     this.lines.push(words.slice(separationIndex, i).join(' '));
                     separationIndex = i;
                 }
                 
-                if (words.slice(separationIndex, i).join(' ') == words.slice(separationIndex).join(' ')) {
-                    this.lines.push(words.slice(separationIndex, i).join(' '));
-                }
-                
-                if (words[i] == 'YOU:') {
+                if (words[i] == words[i].match(/[A-Z-:]*/g).join('') && 
+                    words[i].match(/[A-Z-:]*/g).join('').length > 3 ) {
+                    
                     found_first_you = true;
                 }
+            }
+            if (words.slice(separationIndex, i).join(' ') == words.slice(separationIndex).join(' ')) {
+                this.lines.push(words.slice(separationIndex, i).join(' '));
             }
         }
         
@@ -456,7 +475,7 @@ Character = Class.extend({
             }
             else {
                 if (j < this.lines.length && j <= maxLines) {
-                    if (this.lines[j].slice(0, 3) == 'YOU') {
+                    if (this.lines[j].slice(0, 4) == this.lines[j].slice(0, 4).match(/[A-Z-:]*/g).join('')) {
                         if (gInputEngine.actions['space'] == true) {
                             this.typewriterLineIndex++;
                             this.indexesPerLines.push(i);
@@ -468,8 +487,16 @@ Character = Class.extend({
                         this.indexesPerLines.push(i);
                         this.typewriterLetterIndex = 0;
                     }
-                }    
+                }
             }
+        }
+        
+        //check if end of text
+        if (this.lines.length <= 1) {
+            this.endOfText = true;
+        }
+        else {
+            this.endOfText = false;
         }
             
         gGameEngine.ctx.fillStyle = '#DDDDDD';
