@@ -370,7 +370,12 @@ Character = Class.extend({
             else {
                 this.dialogueBox = false;
                 this.dialogue = false;
-                this.direction = this.initialDirection;
+                this.lines = [];
+                this.typewriterLetterIndex = 0;
+                this.typewriterLineIndex = 1;
+                this.indexesPerLines = [];
+                if (this.path.length <= 1)
+                    this.direction = this.initialDirection;
             } 
         }    
     },
@@ -386,7 +391,6 @@ Character = Class.extend({
     
     
     drawDialogueBox: function() {
-        this.dialogueEngaged = true;
         var translatedContext = gGameEngine.translatedContext(10, 250);
         var translatedX = translatedContext[0];
         var translatedY = translatedContext[1];
@@ -408,13 +412,11 @@ Character = Class.extend({
     
     
     typewriter: function(translatedX, translatedY, width, height) {
-        if (this.endOfText == true) {
-            this.lines = [];
-        }
     
         var maxWidth = 320;
         var maxLines = 5;
         var text = '';
+        
         //check to see if mainPlayer talked to the right people...
         if (this.imgName == "character_three" || gGameEngine.talkedToAlice == true) { //character_three is Alice
             text = this.dialogueText['text'];
@@ -437,7 +439,8 @@ Character = Class.extend({
         if (this.lines.length <= 0) {
             for (var i = 0; i < words.length; i++) {
                 if (gGameEngine.ctx.measureText(words.slice(separationIndex, i).join(' ')).width >= 
-                    maxWidth || (words[i] == words[i].match(/[A-Z-:]*/g).join('') && words[i].match(/[A-Z-:]*/g).join('').length > 3 && found_first_you)) {
+                    maxWidth || (words[i] == words[i].match(/[A-Z-:]*/g).join('') && 
+                    words[i].match(/[A-Z-:]*/g).join('').length > 3 && found_first_you)) {
                     
                     this.lines.push(words.slice(separationIndex, i).join(' '));
                     separationIndex = i;
@@ -491,13 +494,6 @@ Character = Class.extend({
             }
         }
         
-        //check if end of text
-        if (this.lines.length <= 1) {
-            this.endOfText = true;
-        }
-        else {
-            this.endOfText = false;
-        }
             
         gGameEngine.ctx.fillStyle = '#DDDDDD';
         gGameEngine.ctx.font = '20px sans-serif';
