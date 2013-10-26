@@ -40,8 +40,11 @@ GameEngine = Class.extend({
                     {name: "pot", src: "img/pot.png"},
                     {name: "character_one", src: "img/character_one.png"},
                     {name: "character_two", src: "img/character_two.png"},
-                    {name: "character_three", src: "img/character_three.png"},
-                    {name: "character_four", src: "img/character_four.png"},
+                    {name: "character_three", src: "img/character_one.png"},
+                    {name: "character_four", src: "img/character_two.png"},
+                    {name: "character_five", src: "img/character_two.png"},
+                    {name: "character_six", src: "img/character_one.png"},
+                    {name: "character_seven", src: "img/character_one.png"},
                     {name: "multi_characters", src: "img/multi_characters.png"}
                     ],               
     
@@ -56,9 +59,13 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
-        characterOne = new Character(700, 100, 'character_one', 'up', [750, 300]);
+        characterOne = new Character(576, 224, 'character_one', 'up', [704, 64]);
         characterTwo = new Character(850, 200, 'character_two', 'down', [700, 200]);
-        
+        characterThree = new Character(192, 148, 'character_three', 'up', [192, 148]);
+        characterFour = new Character(320, 148, 'character_four', 'up', [320, 148]);
+        characterFive = new Character(414, 244, 'character_five', 'up', [414, 244]);
+        characterSix = new Character(182, 748, 'character_six', 'right', [400, 748]);
+        characterSeven = new Character(1370, 1194, 'character_seven', 'right', [256, 1416]);
         
         gInputEngine.addListener('enter', this.exitMenu.bind(this));  
         this.gameLoop();
@@ -70,7 +77,7 @@ GameEngine = Class.extend({
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
         this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
         
-        this.ctx.fillStyle = '#66FF00';
+        this.ctx.fillStyle = '#FFFFFF'; //#66FF00
         this.ctx.font = '40px sans-serif';
         this.ctx.fillText("Press Enter to Play", this.canvasWidth/4+10, this.canvasHeight/2 - 10);
     },
@@ -373,6 +380,11 @@ GameEngine = Class.extend({
     	this.sorted.push({'name': mainPlayer, 'coordY': mainPlayer.coordY});
     	this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
     	this.sorted.push({'name': characterTwo, 'coordY': characterTwo.coordY});
+    	this.sorted.push({'name': characterThree, 'coordY': characterThree.coordY});
+    	this.sorted.push({'name': characterFour, 'coordY': characterFour.coordY});
+    	this.sorted.push({'name': characterFive, 'coordY': characterFive.coordY});
+    	this.sorted.push({'name': characterSix, 'coordY': characterSix.coordY});
+    	this.sorted.push({'name': characterSeven, 'coordY': characterSeven.coordY});
     	
     	this.sorted.sort(function (obj1, obj2) {
     		return obj1.coordY - obj2.coordY;

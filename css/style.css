@@ -1,5 +1,5 @@
 html, body {
-	height: 96%;
+	height: 98%;
 	margin: 0px;
 	padding: 0px;
 }
@@ -13,6 +13,7 @@ body {
 
 canvas {
 	border: 1px solid black;
+	margin-bottom: 30px;
 }
 
 
@@ -33,26 +34,32 @@ h1 {
 	letter-spacing: 5px;
 	font-size: 40px;
 	line-height: 40px;
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 	color: #444857;
 }
 
-h3 {
-	color: #1f97f2;
-}
 
 #canvas {
 	float: left;
 }
 
+.heart {
+	color: red;
+}
+
 .box {
     padding-top: 30px;
+    padding-bottom: 30px;
 	width: 800px;
 	margin: 0 auto;
 }
 
 .footer {
-	padding: 5px 0;
-	height: 4%;
+    border-style: solid;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+	padding-bottom: 0px;
 }
 

@@ -33,14 +33,26 @@ Character = Class.extend({
     directionFlag: {'up': true, 'down': true, 'right': true, 'left': true},
     
     init: function(x, y, name, direction, destination) {
-        //making x and y coords divisible by the tileSize
-        this.coordX = Math.floor(x / gGameEngine.tileSize) * gGameEngine.tileSize;
-        this.coordY = Math.floor(y / gGameEngine.tileSize) * gGameEngine.tileSize;
+        var test = [x, y]
         
+        if (test.toString() == destination.toString()) {
+            this.coordX = x;
+            this.coordY = y;
+            
+            this.destination = destination;
+        }
+        else { //making x and y coords divisible by the tileSize, only if characters are moving
+            this.coordX = Math.floor(x / gGameEngine.tileSize) * gGameEngine.tileSize;
+            this.coordY = Math.floor(y / gGameEngine.tileSize) * gGameEngine.tileSize;
+            
+            this.destination = [Math.floor(destination[0] / gGameEngine.tileSize) * gGameEngine.tileSize,
+                Math.floor(destination[1] / gGameEngine.tileSize) * gGameEngine.tileSize];
+        }    
+        
+        this.initialDirection = direction;
         this.direction = direction;
         this.imgName = name;
-        this.destination = [Math.floor(destination[0] / gGameEngine.tileSize) * gGameEngine.tileSize,
-                            Math.floor(destination[1] / gGameEngine.tileSize) * gGameEngine.tileSize];
+
                             
         this.startingPoint = [this.coordX, this.coordY];
         for (var i = 0; i < gGameEngine.images.length; i++) {
@@ -356,6 +368,7 @@ Character = Class.extend({
             else {
                 this.dialogueBox = false;
                 this.dialogue = false;
+                this.direction = this.initialDirection;
             } 
         }    
     },
