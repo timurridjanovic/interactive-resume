@@ -46,8 +46,7 @@ GameEngine = Class.extend({
                     {name: "character_four", src: "img/character_two.png"},
                     {name: "character_five", src: "img/character_two.png"},
                     {name: "character_six", src: "img/character_one.png"},
-                    {name: "character_seven", src: "img/character_one.png"},
-                    {name: "multi_characters", src: "img/multi_characters.png"}
+                    {name: "character_seven", src: "img/character_one.png"}
                     ],               
     
     
@@ -68,9 +67,6 @@ GameEngine = Class.extend({
         characterFive = new Character(414, 244, 'character_five', 'up', [414, 244]);
         characterSix = new Character(182, 748, 'character_six', 'right', [400, 748]);
         characterSeven = new Character(1370, 1194, 'character_seven', 'right', [256, 1416]);
-        
-        gInputEngine.addListener('enter', this.exitMenu.bind(this));  
-        this.gameLoop();
 
     },
     
@@ -95,7 +91,6 @@ GameEngine = Class.extend({
         
         gInputEngine.addListener('backspace', this.soundToggle);
         gInputEngine.addListener('F1', this.restart.bind(this));
-        gGameEngine.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
         
     },
     
@@ -105,7 +100,7 @@ GameEngine = Class.extend({
     
     gameLoop: function() {   
         //clearing contexts
-        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
+        //this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
          
         
         if (this.menu === true) {
@@ -185,8 +180,12 @@ GameEngine = Class.extend({
         var loadedItems = 0;
         //preloading audio too
         mainSoundTrack = new SoundManager();
-        mainSoundTrack.loadAsync('music/honeybee.mp3', function () {that.progressBar(loadedItems++)});
-        //
+        mainSoundTrack.loadAsync('music/honeybee.mp3', function () {});
+        
+        //draw black background
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+        
         for (var i = 0; i < this.loadManifest.length; i++) {
             this.images[i] = new Image();
             this.images[i].onload = function() {
@@ -229,19 +228,18 @@ GameEngine = Class.extend({
     progressBar: function(i) {
         
         var percentIndex = this.progressBarPercent;
-        this.progressBarPercent = Math.floor((i/this.loadManifest.length+1)*100);
+        this.progressBarPercent = Math.floor((i/this.loadManifest.length)*100);
         var percentToComplete = this.progressBarPercent;
         
         for (percentIndex; percentIndex <= this.progressBarPercent; percentIndex++) {
-            this.ctx.fillStyle = 'black';
-            this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-            
             this.ctx.fillStyle = 'green';
             this.ctx.strokeRect(1, this.canvasHeight/2-25, this.canvasWidth-2, 50);
             this.ctx.fillRect(2, this.canvasHeight/2-25+1, this.canvasWidth*(percentIndex/100)-3, 50-2);
         }
         if (percentIndex >= 100) {
             this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            gInputEngine.addListener('enter', this.exitMenu.bind(this));  
+            this.gameLoop();
         
         }
        
@@ -289,30 +287,61 @@ GameEngine = Class.extend({
                     var tileID = this.mapData["layers"][layer]['data'][tileNumber];
                     var image = this.tilesImgs[tileID];
                     
-
+                    //creating coordinates for tile object
+                    var tileCoords = {};
+                    tileCoords.top = MapY;
+                    tileCoords.bottom = MapY + this.tileSize;
+                    tileCoords.left = MapX;
+                    tileCoords.right = MapX + this.tileSize;
                     
                     //if tileID == 0, there is no tile...
                     if (tileID != 0) {
                         //collision detection
                         if (this.mapData.layers[layer].properties.collision == 'true' && this.tilesDrawn == false) {
-                        	var tileCoords = {};
-                        	tileCoords.top = MapY;
-                        	tileCoords.bottom = MapY + this.tileSize;
-                        	tileCoords.left = MapX;
-                        	tileCoords.right = MapX + this.tileSize;
                             this.collision.push(tileCoords);
                           
                         }
-                        this.ctx.beginPath();
-                        this.ctx.drawImage(image, MapX, MapY);
-                        this.ctx.closePath();
                         
-                        
+                        //check if tile is currently on canvas
+                        if(this.isTileOnCanvas(tileCoords)) {
+                            this.ctx.beginPath();
+                            this.ctx.drawImage(image, MapX, MapY);
+                            this.ctx.closePath();
+                        }
                     }
                 }
             }
         }
         this.tilesDrawn = true;
+    },
+    
+    isTileOnCanvas: function(tileCoords) {
+        var offset = this.translatedContext(0, 0);
+        var offsetX = offset[0];
+        var offsetY = offset[1];
+        var distanceX = 0;
+        var distanceY = 0;
+        
+        if (offsetX > 0 && offsetX < 800)
+            distanceX = this.canvasWidth/2 + this.tileSize;
+        else
+            distanceX = this.canvasWidth;
+            
+        if (offsetY > 0 && offsetY < 1200)
+            distanceY = this.canvasHeight/2 + this.tileSize;
+        else
+            distanceY = this.canvasHeight;
+        
+        if (tileCoords.left >= mainPlayer.coordX - distanceX
+            && tileCoords.right <= mainPlayer.coordX + distanceX) {
+             
+            if (tileCoords.top >= mainPlayer.coordY - distanceY 
+            && tileCoords.bottom <= mainPlayer.coordY + distanceY) {
+                return true;
+            }
+        }
+        
+        return false;
     },
     
     
@@ -363,7 +392,7 @@ GameEngine = Class.extend({
     },
     
     intersectRect: function(collisionTiles, character) {
-    	
+    
     	for (var i = 0; i < collisionTiles.length; i++) {
     		var tile = collisionTiles[i];
     		var upGap = 12;

@@ -145,9 +145,9 @@ Character = Class.extend({
             this.path = this.path.reverse();
             this.pathIndex = 0;
         }
-
+        
         //check for space event 
-        this.checkSpaceEvent();    
+        this.checkSpaceEvent();  
         
         //direction handling
 
@@ -184,19 +184,24 @@ Character = Class.extend({
                 var image = gGameEngine.characterImgs[i];
             }
         }
-        //drawing
-        gGameEngine.ctx.beginPath();
-        
-        gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
-            this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
-          
-        gGameEngine.ctx.closePath();      
+        //drawing if on canvas
+        if (gGameEngine.isTileOnCanvas(this.characterCoords)) {
+            gGameEngine.ctx.beginPath();
+            
+            gGameEngine.ctx.drawImage(image, this.frameX[this.currentFrame], 
+                this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
+              
+            gGameEngine.ctx.closePath(); 
+        }     
     },
 
 
     aStarPathFinder: function() {
-        var start = new this.node(this.startingPoint[0], this.startingPoint[1], -1, this.startingPoint, this.destination, 0);
-        var destination = new this.node(this.destination[0], this.destination[1], -1, this.startingPoint, this.destination, 0);
+        var start = new this.node(this.startingPoint[0], this.startingPoint[1], -1, 
+            this.startingPoint, this.destination, 0);
+        var destination = new this.node(this.destination[0], this.destination[1], -1, 
+            this.startingPoint, this.destination, 0);
+            
         var columns = gGameEngine.tilesY * gGameEngine.tileSize;
         var rows = gGameEngine.tilesY * gGameEngine.tileSize;
         
@@ -306,6 +311,7 @@ Character = Class.extend({
 	    this.h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
 	    this.f = this.g + this.h;    
     },
+    
     
     checkSpaceEvent: function() {
         var gapUp = 12;
