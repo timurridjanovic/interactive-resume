@@ -45,7 +45,7 @@ Player = Class.extend({
     	    movingFlag = true;
     		
     	    //collision with other characters
-    	    this.characterCollision(false);
+    	    this.characterCollision();
     				
     	    //collision detection with collision tiles
             if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 2)) {
@@ -107,7 +107,7 @@ Player = Class.extend({
     },
     
     //check is true if it's just to check if two tiles intersect and false if I want to call collisionHandler
-    characterCollision: function(check) {
+    characterCollision: function() {
         for (var i = 0; i < gGameEngine.allCharacters.length; i++) {
             var name = gGameEngine.allCharacters[i];
             var character = gGameEngine.characterCollisions[name];

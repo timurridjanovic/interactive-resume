@@ -182,16 +182,16 @@ GameEngine = Class.extend({
     
     preloadImages: function() {       
         var that = this;
-        var loadedImages = 0;
+        var loadedItems = 0;
         //preloading audio too
         mainSoundTrack = new SoundManager();
-        mainSoundTrack.loadAsync('music/honeybee.mp3', function (sObj) {});
+        mainSoundTrack.loadAsync('music/honeybee.mp3', function () {that.progressBar(loadedItems++)});
         //
         for (var i = 0; i < this.loadManifest.length; i++) {
             this.images[i] = new Image();
             this.images[i].onload = function() {
-                loadedImages++; 
-                that.progressBar(loadedImages);
+                loadedItems++; 
+                that.progressBar(loadedItems);
                 
             }
             
@@ -229,7 +229,7 @@ GameEngine = Class.extend({
     progressBar: function(i) {
         
         var percentIndex = this.progressBarPercent;
-        this.progressBarPercent = Math.floor((i/this.loadManifest.length)*100);
+        this.progressBarPercent = Math.floor((i/this.loadManifest.length+1)*100);
         var percentToComplete = this.progressBarPercent;
         
         for (percentIndex; percentIndex <= this.progressBarPercent; percentIndex++) {
