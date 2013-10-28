@@ -89,11 +89,9 @@ GameEngine = Class.extend({
         this.menu = false;
         gInputEngine.removeListeners();
         
-        mainSoundTrack = new SoundManager();
      
         //var volume = 1.0;
-        mainSoundTrack.loadAsync('music/honeybee.mp3', 
-            function (sObj) {mainSoundTrack.playSound(sObj.path, {looping:true});});
+        mainSoundTrack.playSound(mainSoundTrack.clips['music/honeybee.mp3'].s.path, {looping:true});    
         
         gInputEngine.addListener('backspace', this.soundToggle);
         gInputEngine.addListener('F1', this.restart.bind(this));
@@ -185,6 +183,10 @@ GameEngine = Class.extend({
     preloadImages: function() {       
         var that = this;
         var loadedImages = 0;
+        //preloading audio too
+        mainSoundTrack = new SoundManager();
+        mainSoundTrack.loadAsync('music/honeybee.mp3', function (sObj) {});
+        //
         for (var i = 0; i < this.loadManifest.length; i++) {
             this.images[i] = new Image();
             this.images[i].onload = function() {

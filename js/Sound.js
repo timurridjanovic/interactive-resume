@@ -15,8 +15,11 @@ SoundManager = Class.extend({
         } catch(e) {
             alert('Your browser does not support the webkit Audio Context API');
         }
-		this.mainNode = this.soundContext.createGainNode(0);
-		this.mainNode.connect(this.soundContext.destination);
+        
+        if (this.soundContext) {
+		    this.mainNode = this.soundContext.createGainNode(0);
+		    this.mainNode.connect(this.soundContext.destination);
+		}    
 		
 	},
 
