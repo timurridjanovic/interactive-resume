@@ -1,8 +1,6 @@
 # HTML5 GAME: 
 
-**Description**:
-
-Interactive resume in the form of an HTML5 game.
+**Description**: Interactive resume in the form of an HTML5 game.
 
 **Instructions**: 
 
@@ -17,5 +15,4 @@ Press 'F1' to refresh the page and start over.
 **Demo**:
 
 On Google App Engine: http://www.interactive-resume.appspot.com
-
 On Heroku: http://www.interactive-resume.heroku
