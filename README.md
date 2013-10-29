@@ -1,6 +1,7 @@
 # HTML5 GAME: 
 
-**Description**: Interactive resume in the form of an HTML5 game.
+**Description**:  
+Interactive resume in the form of an HTML5 game.
 
 **Instructions**:  
 -Use the arrows to move around and talk to Timur's colleagues. You can find them with the help of the map on the top right corner of the canvas.
