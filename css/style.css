@@ -7,6 +7,8 @@ html, body {
 body {
 	font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
 	background: #FFFFFF;
+	font-weight:normal !important;
+	/*-mozilla-text-shadow: -1px -1px 0 rgba(255,255,255,0.6);*/
 	text-shadow: -1px -1px 0 rgba(255,255,255,0.6);
 	color: #444857;
 }
