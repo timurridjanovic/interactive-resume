@@ -91,7 +91,7 @@
 
             //collision with mainPlayer
             if (this.movingFlag == true) { //collision detection with player happens only if bot is moving
-                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this, 2)) {
+                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this, 1)) {
                     this.directionFlag.up = true;
                     this.directionFlag.down = true;
                     this.directionFlag.left = true;
@@ -102,7 +102,7 @@
             
 
             //collision with collision tiles
-            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 2)) {
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 1)) {
                 this.directionFlag.up = true;
                 this.directionFlag.down = true;
                 this.directionFlag.left = true;
@@ -153,19 +153,19 @@
             //direction handling
 
             if (this.direction == 'down' && this.directionFlag.down == true) {
-                this.coordY+=2;
+                this.coordY++;
             }
                 
             if (this.direction == 'up' && this.directionFlag.up == true) {
-                this.coordY-=2;
+                this.coordY--;
             }   
 
             if (this.direction == 'right' && this.directionFlag.right == true) {
-                this.coordX+=2;
+                this.coordX++;
             }
 
             if (this.direction == 'left' && this.directionFlag.left == true) {
-                this.coordX-=2;
+                this.coordX--;
             }        
                     
             //animation when moving
