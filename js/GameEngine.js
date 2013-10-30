@@ -60,13 +60,13 @@ GameEngine = Class.extend({
         this.setupMap();
         gInputEngine.setup();
         mainPlayer = new Player();
-        characterOne = new Character(576, 224, 'character_one', 'up', [704, 64]);
+        //characterOne = new Character(576, 224, 'character_one', 'up', [704, 64]);
         characterTwo = new Character(850, 200, 'character_two', 'down', [608, 288]);
-        characterThree = new Character(192, 148, 'character_three', 'up', [192, 148]);
-        characterFour = new Character(320, 148, 'character_four', 'up', [320, 148]);
-        characterFive = new Character(414, 244, 'character_five', 'up', [414, 244]);
-        characterSix = new Character(182, 748, 'character_six', 'right', [400, 748]);
-        characterSeven = new Character(1370, 1194, 'character_seven', 'right', [256, 1416]);
+        //characterThree = new Character(192, 148, 'character_three', 'up', [192, 148]);
+        //characterFour = new Character(320, 148, 'character_four', 'up', [320, 148]);
+        //characterFive = new Character(414, 244, 'character_five', 'up', [414, 244]);
+        //characterSix = new Character(182, 748, 'character_six', 'right', [400, 748]);
+        //characterSeven = new Character(1370, 1194, 'character_seven', 'right', [256, 1416]);
 
     },
     
@@ -104,7 +104,7 @@ GameEngine = Class.extend({
          
         
         if (this.menu === true) {
-            this.drawTiles()
+            this.drawTiles();
             this.startMenu();  
         }
         else {
@@ -410,13 +410,13 @@ GameEngine = Class.extend({
     sortByYAxis: function() {
     	this.sorted = [];
     	this.sorted.push({'name': mainPlayer, 'coordY': mainPlayer.coordY});
-    	this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
+    	//this.sorted.push({'name': characterOne, 'coordY': characterOne.coordY});
     	this.sorted.push({'name': characterTwo, 'coordY': characterTwo.coordY});
-    	this.sorted.push({'name': characterThree, 'coordY': characterThree.coordY});
-    	this.sorted.push({'name': characterFour, 'coordY': characterFour.coordY});
-    	this.sorted.push({'name': characterFive, 'coordY': characterFive.coordY});
-    	this.sorted.push({'name': characterSix, 'coordY': characterSix.coordY});
-    	this.sorted.push({'name': characterSeven, 'coordY': characterSeven.coordY});
+    	//this.sorted.push({'name': characterThree, 'coordY': characterThree.coordY});
+    	//this.sorted.push({'name': characterFour, 'coordY': characterFour.coordY});
+    	//this.sorted.push({'name': characterFive, 'coordY': characterFive.coordY});
+    	//this.sorted.push({'name': characterSix, 'coordY': characterSix.coordY});
+    	//this.sorted.push({'name': characterSeven, 'coordY': characterSeven.coordY});
     	
     	this.sorted.sort(function (obj1, obj2) {
     		return obj1.coordY - obj2.coordY;
