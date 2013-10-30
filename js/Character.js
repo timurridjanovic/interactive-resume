@@ -193,12 +193,12 @@
                     this.frameY[this.direction], 32, 32, this.coordX, this.coordY, 32, 32);
                   
                 gGameEngine.ctx.closePath(); 
-            }     
+            } 
+            
         },
 
 
         aStarPathFinder: function() {
-            console.log('yeah!');
             var start = new Node(this.startingPoint[0], this.startingPoint[1], this.destination, 0);
             var destination = new Node(this.destination[0], this.destination[1], this.destination, 0);
             
@@ -209,10 +209,9 @@
             open.push(start);
             //Keep going while there's nodes in our open list
             while (open.length > 0) {
-                open = Node.sortByCost(open);
+                Node.sortByCost(open);
                 
                 var current_node = open.splice(0, 1)[0];
-                closed.push(current_node);
                
                 //Check if we've reached our destination
                 if (Node.same(current_node, destination)) {
@@ -220,19 +219,27 @@
                     return destination.recreatePath();            
                 }
                 
-                //Check to see the best neighbor (in all 4 directions)
-                var neighbor_list = current_node.neighbors(this.destination);
+                var neighbor_list = current_node.neighbors(destination);
                 
                 for (var j = 0; j < neighbor_list.length; j++) {
                     var neighbor = neighbor_list[j];    
-                    
+
                     //if new node is open                            
                     if (!neighbor.colliding()) {
-                        if (contains(closed, neighbor, Node.same)) { //pass in Node.same function to function contains
+                        var i = retrieve(closed, neighbor, Node.same);
+                        if (i !== undefined 
+                            && closed[i].f <= neighbor.f) {
                             continue;
                         }
-                        else if (!contains(open, neighbor, Node.same)) {
+                        var e = retrieve(open, neighbor, Node.same);
+                        if (e === undefined) {
                             open.push(neighbor);
+                        }
+                        else if (open[e].f > neighbor.f) {
+                            open[e].h = neighbor.h;
+                            open[e].g = neighbor.g;
+                            open[e].parent = neighbor.parent;
+                            open[e].f = neighbor.f;
                         }
                     }
                 }
@@ -456,11 +463,11 @@
     });
 
     var Node = function(x, y, destination, g, parent) {
-        var h = Math.abs(x-destination[0]) + Math.abs(y - destination[1]);
+        this.h = (Math.abs(x-destination.x) + Math.abs(y - destination.y))/gGameEngine.tileSize;
         this.x = x;
         this.y = y;
         this.g = g;
-        this.f = this.g + h;
+        this.f = this.g + this.h;
         this.parent = parent;
     }
 
@@ -505,7 +512,7 @@
 
     Node.sortByCost = function(nodes) {
         //quicksort
-        if (nodes.length <= 1)
+        /*if (nodes.length <= 1)
             return nodes;
             
         var greater = [];
@@ -518,9 +525,9 @@
             else if (nodes[i].f < pivot.f)
                 lesser.push(nodes[i]);       
         }
-        return Node.sortByCost(lesser).concat(pivot, Node.sortByCost(greater));
+        return Node.sortByCost(lesser).concat(pivot, Node.sortByCost(greater));*/
         
-        /*nodes.sort(function(a, b) {
+        nodes.sort(function(a, b) {
             if (a.f < b.f) 
                 return -1;
             else if (a.f === b.f)
@@ -529,7 +536,7 @@
                 return 1;
             else
                 throw 'woo';            
-        });*/
+        });
     };
     
 
@@ -537,13 +544,13 @@
         return node1.x == node2.x && node1.y == node2.y;
     };
 
-    var contains = function(array, item, same) {
+    var retrieve = function(array, item, same) {
         for (var i = 0; i < array.length; i++) {
             if (same(array[i], item)) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return undefined;
     }; 
 })(this);       
 
