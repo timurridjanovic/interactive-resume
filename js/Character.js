@@ -91,7 +91,7 @@
 
             //collision with mainPlayer
             if (this.movingFlag == true) { //collision detection with player happens only if bot is moving
-                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this, 1)) {
+                if (!gGameEngine.collisionHandler([mainPlayer.characterCoords], this, 2)) {
                     this.directionFlag.up = true;
                     this.directionFlag.down = true;
                     this.directionFlag.left = true;
@@ -102,7 +102,7 @@
             
 
             //collision with collision tiles
-            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 1)) {
+            if (!gGameEngine.collisionHandler(gGameEngine.collision, this, 2)) {
                 this.directionFlag.up = true;
                 this.directionFlag.down = true;
                 this.directionFlag.left = true;
@@ -153,19 +153,19 @@
             //direction handling
 
             if (this.direction == 'down' && this.directionFlag.down == true) {
-                this.coordY++;
+                this.coordY+=2;
             }
                 
             if (this.direction == 'up' && this.directionFlag.up == true) {
-                this.coordY--;
+                this.coordY-=2;
             }   
 
             if (this.direction == 'right' && this.directionFlag.right == true) {
-                this.coordX++;
+                this.coordX+=2;
             }
 
             if (this.direction == 'left' && this.directionFlag.left == true) {
-                this.coordX--;
+                this.coordX-=2;
             }        
                     
             //animation when moving
@@ -198,18 +198,18 @@
 
 
         aStarPathFinder: function() {
+            console.log('yeah!');
             var start = new Node(this.startingPoint[0], this.startingPoint[1], this.destination, 0);
             var destination = new Node(this.destination[0], this.destination[1], this.destination, 0);
-                
+            
             var open = [];
             var closed = [];
 
             //Push the start node onto the list of open nodes
             open.push(start);
-            
             //Keep going while there's nodes in our open list
             while (open.length > 0) {
-                Node.sortByCost(open);
+                open = Node.sortByCost(open);
                 
                 var current_node = open.splice(0, 1)[0];
                 closed.push(current_node);
@@ -217,7 +217,6 @@
                 //Check if we've reached our destination
                 if (Node.same(current_node, destination)) {
                     destination.parent = current_node;
-                   
                     return destination.recreatePath();            
                 }
                 
@@ -505,10 +504,34 @@
     };
 
     Node.sortByCost = function(nodes) {
-        nodes.sort(function(a, b) {
-            return a.f - b.f;
-        });
+        //quicksort
+        if (nodes.length <= 1)
+            return nodes;
+            
+        var greater = [];
+        var lesser = [];
+        var pivot = nodes.pop();
+        
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].f >= pivot.f) 
+                greater.push(nodes[i]);
+            else if (nodes[i].f < pivot.f)
+                lesser.push(nodes[i]);       
+        }
+        return Node.sortByCost(lesser).concat(pivot, Node.sortByCost(greater));
+        
+        /*nodes.sort(function(a, b) {
+            if (a.f < b.f) 
+                return -1;
+            else if (a.f === b.f)
+                return 0;
+            else if (a.f > b.f)
+                return 1;
+            else
+                throw 'woo';            
+        });*/
     };
+    
 
     Node.same = function(node1, node2) {
         return node1.x == node2.x && node1.y == node2.y;
