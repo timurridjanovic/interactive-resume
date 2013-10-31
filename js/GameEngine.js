@@ -51,7 +51,7 @@ GameEngine = Class.extend({
     
     
     load: function() {
-        this.canvas = document.getElementById('canvas');
+        this.canvas = document.getElementById('mainCanvas');
         this.canvasWidth = this.canvas.width;
         this.canvasHeight = this.canvas.height;
 	    this.ctx = this.canvas.getContext('2d');
@@ -101,10 +101,9 @@ GameEngine = Class.extend({
     gameLoop: function() {   
         //clearing contexts
         //this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight); 
-         
         
         if (this.menu === true) {
-            this.drawTiles();
+            this.drawTilesFromCache();
             this.startMenu();  
         }
         else {
@@ -113,7 +112,7 @@ GameEngine = Class.extend({
             this.translateContext();
        
             //drawing tiles        
-            this.drawTiles();
+            this.drawTilesFromCache();
             
             //drawing player and character sorted by Y axis
             var sorted = this.sortByYAxis();
@@ -241,6 +240,7 @@ GameEngine = Class.extend({
         if (percentIndex >= 100) {
             this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             gInputEngine.addListener('enter', this.exitMenu.bind(this));  
+            this.drawTiles();
             this.gameLoop();
         
         }
@@ -273,7 +273,16 @@ GameEngine = Class.extend({
 	            }
 	        }
 	    }
-	
+	    
+	    //creating non visible canvas to copy from (caching)
+	    this.osCanvas = document.createElement("canvas");
+	    this.osCanvas.width = this.tilesX * this.tileSize;
+	    this.osCanvas.height = this.tilesY * this.tileSize;	    
+	    this.osCtx = this.osCanvas.getContext('2d');
+    },
+    
+    drawTilesFromCache: function() {
+        this.ctx.drawImage(this.osCanvas, 0, 0);
     },
     
     drawTiles: function() {
@@ -301,15 +310,11 @@ GameEngine = Class.extend({
                         //collision detection
                         if (this.mapData.layers[layer].properties.collision == 'true' && this.tilesDrawn == false) {
                             this.collision.push(tileCoords);
-                          
                         }
-                        
-                        //check if tile is currently on canvas
-                        if(this.isTileOnCanvas(tileCoords)) {
-                            this.ctx.beginPath();
-                            this.ctx.drawImage(image, MapX, MapY);
-                            this.ctx.closePath();
-                        }
+                        //drawing tiles
+                        this.osCtx.beginPath();
+                        this.osCtx.drawImage(image, MapX, MapY);
+                        this.osCtx.closePath();
                     }
                 }
             }

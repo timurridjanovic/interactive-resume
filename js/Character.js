@@ -226,20 +226,11 @@
 
                     //if new node is open                            
                     if (!neighbor.colliding()) {
-                        var i = retrieve(closed, neighbor, Node.same);
-                        if (i !== undefined 
-                            && closed[i].f <= neighbor.f) {
+                        if (retrieve(closed, neighbor, Node.same) !== undefined) {
                             continue;
                         }
-                        var e = retrieve(open, neighbor, Node.same);
-                        if (e === undefined) {
+                        if (retrieve(open, neighbor, Node.same) === undefined) {
                             open.push(neighbor);
-                        }
-                        else if (open[e].f > neighbor.f) {
-                            open[e].h = neighbor.h;
-                            open[e].g = neighbor.g;
-                            open[e].parent = neighbor.parent;
-                            open[e].f = neighbor.f;
                         }
                     }
                 }
@@ -343,7 +334,6 @@
         
         
         typewriter: function(translatedX, translatedY, width, height) {
-        
             var maxWidth = 320;
             var maxLines = 5;
             var text = '';
@@ -352,7 +342,6 @@
             if (this.imgName == "character_three" || gGameEngine.talkedToAlice == true) { //character_three is Alice
                 text = this.dialogueText['text'];
                 gGameEngine.talkedToAlice = true;
-                
             }
             else {
                 text = this.dialogueText['notMyTurn'];
@@ -388,7 +377,6 @@
                 }
             }
             
-
             var i = this.typewriterLetterIndex;
             var j = this.typewriterLineIndex;
             
@@ -402,8 +390,6 @@
             }
             
             else {
-                
-                
                 if (i < this.lines[j-1].length) {
                     this.typewriterLetterIndex++;
                 }
@@ -425,11 +411,8 @@
                 }
             }
             
-                
             gGameEngine.ctx.fillStyle = '#DDDDDD';
             gGameEngine.ctx.font = '20px sans-serif';
-            
-            
             
             for (var x = 0; x < j - 1; x++) {
                 gGameEngine.ctx.fillText(this.lines.slice(x, j).join().slice(0, this.indexesPerLines[x]), 
@@ -528,14 +511,7 @@
         return Node.sortByCost(lesser).concat(pivot, Node.sortByCost(greater));*/
         
         nodes.sort(function(a, b) {
-            if (a.f < b.f) 
-                return -1;
-            else if (a.f === b.f)
-                return 0;
-            else if (a.f > b.f)
-                return 1;
-            else
-                throw 'woo';            
+            return a.f - b.f;
         });
     };
     
@@ -547,10 +523,9 @@
     var retrieve = function(array, item, same) {
         for (var i = 0; i < array.length; i++) {
             if (same(array[i], item)) {
-                return i;
+                return array[i];
             }
         }
-        return undefined;
     }; 
 })(this);       
 
