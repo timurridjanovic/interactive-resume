@@ -52,7 +52,12 @@ h1 {
 
 .box {
     padding-top: 30px;
-    padding-bottom: 30px;
+    padding-bottom: 0px;
+	width: 800px;
+	margin: 0 auto;
+}
+
+.box2 {
 	width: 800px;
 	margin: 0 auto;
 }
