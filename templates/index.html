@@ -4,7 +4,6 @@
 		<title>Interactive Resume</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<script type="text/javascript" src="js/core.js"></script>
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript" src="js/requestAnimationFrame.js"></script>
 		<script type="text/javascript" src="js/InputEngine.js"></script>
 		<script type="text/javascript" src="js/Player.js"></script>
@@ -12,7 +11,7 @@
 		<script type="text/javascript" src="js/Sound.js"></script>
 		<script type="text/javascript" src="js/GameEngine.js"></script>
 	</head>
-	<body>
+	<body onload = "gGameEngine.load()">
 		<div class="container top">
 		    
 		    <center><h1>Timur's Interactive Resume</h1></center>
@@ -26,7 +25,7 @@
 		        <p>Press 'space' to engage in a conversation when positioned right next to the person. When a sentence ends, press 'space' again to continue until the end of the conversation. To disengage a conversation, simply move away.</p>
 		        <p>Press 'backspace' to mute the music.</p>
 		        <p>Press 'F1' to refresh the page and start over.</p>
-		        <p><a href = "resume/timur-resume.pdf">Timur's official resume in PDF format</a></p>
+		        <p><a href = "resume/timur-resume.pdf" target="_blank">Timur's official resume in PDF format</a></p>
 		    </div>  
 		</div>    
 

@@ -503,7 +503,3 @@ GameEngine = Class.extend({
 
 gGameEngine = new GameEngine();
 
-$(document).ready(function() {
-    gGameEngine.load();
-});
-
