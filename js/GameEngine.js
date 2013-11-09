@@ -192,7 +192,6 @@ GameEngine = Class.extend({
             this.images[i].onload = function() {
                 loadedItems++; 
                 that.progressBar(loadedItems);
-                
             }
             
             this.images[i].src = this.loadManifest[i]['src'];
@@ -238,7 +237,7 @@ GameEngine = Class.extend({
             this.ctx.fillRect(2, this.canvasHeight/2-25+1, this.canvasWidth*(percentIndex/100)-3, 50-2);
         }
         if (percentIndex >= 100) {
-            this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            //this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             gInputEngine.addListener('enter', this.exitMenu.bind(this));  
             this.drawTiles();
             this.gameLoop();

@@ -1,3 +1,4 @@
 *~
 *.pyc
 /components
+/ASSETS_JS
