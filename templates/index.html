@@ -11,20 +11,6 @@
 		<script type="text/javascript" src="js/Character.js"></script>
 		<script type="text/javascript" src="js/Sound.js"></script>
 		<script type="text/javascript" src="js/GameEngine.js"></script>
-		<!--<script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-          ga('create', 'UA-45508663-1', 'interactive-resume.appspot.com');
-          ga('send', 'pageview');
-        </script>-->
-        <script>
-            jQuery(document).ready(function($) {
-                $.gaTracker.init("UA-45508663-1");
-            }) ;
-        </script>        
 	</head>
 	<body onload="gGameEngine.load()">
 		<div class="container top">
@@ -50,6 +36,36 @@
 			</div>
 		</footer>	
 	
+	    <script>
+	        //GA code
+            function gaSSDSLoad (acct) {
+              var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www."),
+                  pageTracker,
+                  s;
+              s = document.createElement('script');
+              s.src = gaJsHost + 'google-analytics.com/ga.js';
+              s.type = 'text/javascript';
+              s.onloadDone = false;
+              function init () {
+                pageTracker = _gat._getTracker(acct);
+                pageTracker._trackPageview();
+              }
+              s.onload = function () {
+                s.onloadDone = true;
+                init();
+              };
+              s.onreadystatechange = function() {
+                if (('loaded' === s.readyState || 'complete' === s.readyState) && !s.onloadDone) {
+                  s.onloadDone = true;
+                  init();
+                }
+              };
+              document.getElementsByTagName('head')[0].appendChild(s);
+            }
+
+            /* and run it */
+            window.onload = function () { gaSSDSLoad("UA-45508663-1"); };
+        </script> 
 	
 	</body>
 </html>
