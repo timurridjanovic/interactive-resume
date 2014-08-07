@@ -17,7 +17,7 @@ SoundManager = Class.extend({
         }
         
         if (this.soundContext) {
-		    this.mainNode = this.soundContext.createGainNode(0);
+		    this.mainNode = this.soundContext.createGain();
 		    this.mainNode.connect(this.soundContext.destination);
 		}    
 		
@@ -139,13 +139,15 @@ SoundManager = Class.extend({
 		// Set the properties of currentClip appropriately in order to
 		// play the sound.
 		currentClip.buffer = sd.b; // tell the source which sound to play
-		currentClip.gain.value = volume;
+        var gain = this.soundContext.createGain();
 		currentClip.loop = looping;
 
 		// Connect currentClip to the main node, then play it. We can do
 		// this using the 'connect' and 'noteOn' methods of currentClip.
-		currentClip.connect(this.mainNode);
-		currentClip.noteOn(0);
+		currentClip.connect(gain);
+        gain.gain.value = volume;
+        gain.connect(this.mainNode);
+		currentClip.start(0);
 
 		return true;
 	}
