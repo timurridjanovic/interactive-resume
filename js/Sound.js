@@ -138,7 +138,7 @@ SoundManager = Class.extend({
 
 		// Set the properties of currentClip appropriately in order to
 		// play the sound.
-		currentClip.buffer = sd.b; // tell the source which sound to play
+        currentClip.buffer = sd.b; // tell the source which sound to play
         var gain = this.soundContext.createGain();
 		currentClip.loop = looping;
 
