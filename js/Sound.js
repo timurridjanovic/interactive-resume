@@ -87,7 +87,7 @@ SoundManager = Class.extend({
 		// Gain Node, attach it to the main node, and 
 		// connect it to the audio context's destination. 
 		this.mainNode.disconnect();
-		this.mainNode = this.soundContext.createGainNode(0);
+		this.mainNode = this.soundContext.createGain();
 		this.mainNode.connect(this.soundContext.destination);
 	},
 
