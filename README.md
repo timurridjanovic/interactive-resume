@@ -14,7 +14,6 @@ Interactive resume in the form of an HTML5 game.
 
 **Demo**:  
 On Google App Engine: http://www.interactive-resume.appspot.com  
-On Heroku: http://www.interactive-resume.heroku
 
 P.S.
 Please use in chrome (with a high-end computer for better performance). On the top left corner of the screen, an average number of frames per second is displayed. It should be around 60 frames/second.
