@@ -1,15 +1,10 @@
-SoundManager = Class.extend({
+class SoundManager {
+  clips = {};
+  enabled = true;
+  soundContext;
+  mainNode;
 
-  clips: {},
-
-  enabled: true,
-
-  soundContext: null,
-
-  mainNode: null,
-
-  //----------------------------
-  init: function() {
+  constructor() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try {
       this.soundContext = new window.AudioContext();
@@ -21,10 +16,9 @@ SoundManager = Class.extend({
       this.mainNode = this.soundContext.createGain();
       this.mainNode.connect(this.soundContext.destination);
     }
+  }
 
-  },
-
-  loadAsync: function(path, callbackFcn) {
+  loadAsync(path, callbackFcn) {
     var that = this;
     if (that.clips[path]) {
       callbackFcn(that.clips[path].s);
@@ -59,11 +53,9 @@ SoundManager = Class.extend({
 
 
     return clip.s;
+  }
 
-  },
-
-  //----------------------------
-  togglemute: function() {
+  togglemute() {
     // Check if the gain value of the main node is
     // 0. If so, set it to 1. Otherwise, set it to 0.
     if (this.mainNode.gain.value > 0) {
@@ -71,33 +63,18 @@ SoundManager = Class.extend({
     } else {
       this.mainNode.gain.value = 1;
     }
-  },
+  }
 
-  //----------------------------
-  stopAll: function() {
+  stopAll() {
     // Disconnect the main node, then create a new
     // Gain Node, attach it to the main node, and
     // connect it to the audio context's destination.
     this.mainNode.disconnect();
     this.mainNode = this.soundContext.createGain();
     this.mainNode.connect(this.soundContext.destination);
-  },
+  }
 
-  //----------------------------
-  // Parameters:
-  //	1) path: a string representing the path to the sound
-  //           file.
-  //  2) settings: a dictionary representing any game-specific
-  //               settings we might have for playing this
-  //               sound. In our case the only ones we'll be
-  //               concerned with are:
-  //               {
-  //                   looping: a boolean indicating whether to
-  //                            loop.
-  //                   volume: a number between 0 and 1.
-  //               }
-  //----------------------------
-  playSound: function(path, settings) {
+  playSound(path, settings) {
     // Check if the Sound Manager has been enabled,
     // return false if not.
     if (!this.enabled) return false;
@@ -143,16 +120,14 @@ SoundManager = Class.extend({
 
     return true;
   }
-});
+}
 
-//----------------------------
-Sound = Class.extend({
-  play: function(loop) {
+class Sound {
+  play(loop) {
     // Call the playSound function with the appropriate path and settings.
     this.playSound(this.path, {
       looping: loop,
       volume: 1
     });
   }
-});
-
+}
