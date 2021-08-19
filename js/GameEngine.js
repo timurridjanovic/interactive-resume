@@ -26,12 +26,12 @@ class GameEngine {
   #menu = true;
   mainPlayer;
   characterOne;
-  llllncharacterTwo;
-  llllncharacterThree;
-  llllncharacterFour;
-  llllncharacterFive;
-  llllncharacterSix;
-  llllncharacterSeven;
+  characterTwo;
+  characterThree;
+  characterFour;
+  characterFive;
+  characterSix;
+  characterSeven;
   #mainSoundTrack;
   #requestID;
   #sorted;
